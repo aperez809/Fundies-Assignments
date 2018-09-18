@@ -39,13 +39,12 @@ class Blend implements IMixture {
   IPaint bottom;
 
   }
-}
 
 class ExamplesPaint {
   IPaint red = new Solid("red", new Color(255,0,0));
   IPaint green = new Solid("green", new Color(0,255,0));
   IPaint blue = new Solid("blue", new Color(0,0,255));
 
-  IMixture purple = new Blend()
+  IMixture purple = new Blend();
 
 }

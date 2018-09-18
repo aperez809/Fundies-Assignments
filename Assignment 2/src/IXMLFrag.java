@@ -6,6 +6,7 @@ interface ILoXMLFrag {
   boolean hasAttribute(String name);
   boolean hasAttributeInTag(String tagName, String attName);
   ILoXMLFrag updateAttribute(String name, String value);
+  String renderAsString();
 }
 
 class MtLoXMLFrag implements ILoXMLFrag {
@@ -32,6 +33,11 @@ class MtLoXMLFrag implements ILoXMLFrag {
   public ILoXMLFrag updateAttribute(String name, String value) {
     return this;
   }
+
+  public String renderAsString() {
+    return "";
+  }
+
 }
 
 class ConsLoXMLFrag implements ILoXMLFrag {
@@ -66,9 +72,18 @@ class ConsLoXMLFrag implements ILoXMLFrag {
             this.rest.hasAttributeInTag(tagName, attName);
   }
 
+  public String renderAsString() {
+    if (this.rest.renderAsString().equals("")) {
+      return this.first.renderAsString() + this.rest.renderAsString();
+    }
+    else {
+      return this.first.renderAsString() + " " + this.rest.renderAsString();
+    }
+
+  }
 
   public ILoXMLFrag updateAttribute(String name, String value) {
-    return null;
+    return new ConsLoXMLFrag(this.first.updateAttribute(name, value), this.rest.updateAttribute(name, value));
   }
 }
 
@@ -81,6 +96,8 @@ interface IXMLFrag {
   boolean hasTag(String name);
   boolean hasAttribute(String name);
   boolean hasAttributeInTag(String tagName, String attName);
+  String renderAsString();
+  IXMLFrag updateAttribute(String name, String value);
 }
 
 class Plaintext implements IXMLFrag {
@@ -104,6 +121,14 @@ class Plaintext implements IXMLFrag {
 
   public boolean hasAttributeInTag(String tagName, String attName) {
     return false;
+  }
+
+  public String renderAsString() {
+    return this.txt;
+  }
+
+  public IXMLFrag updateAttribute(String name, String value) {
+    return this;
   }
 }
 
@@ -131,6 +156,14 @@ class Tagged implements IXMLFrag {
   public boolean hasAttributeInTag(String tagName, String attName) {
     return this.tag.hasAttributeInTag(tagName, attName) || this.content.hasAttributeInTag(tagName, attName);
   }
+
+  public String renderAsString() {
+    return this.content.renderAsString();
+  }
+
+  public IXMLFrag updateAttribute(String name, String value) {
+    return new Tagged(this.tag.updateAttribute(name, value), this.content.updateAttribute(name, value));
+  }
 }
 
 class Tag {
@@ -153,6 +186,10 @@ class Tag {
   boolean hasAttributeInTag(String tagName, String attName) {
     return this.name.equals(tagName) && this.atts.hasAttribute(attName);
   }
+
+  Tag updateAttribute(String name, String value) {
+    return new Tag(this.name, this.atts.updateAttribute(name, value));
+  }
 }
 
 
@@ -161,6 +198,7 @@ class Tag {
 // List of Attributes implementation
 interface ILoAtt {
   boolean hasAttribute(String name);
+  ILoAtt updateAttribute(String name, String value);
 }
 
 class ConsLoAtt implements ILoAtt {
@@ -175,12 +213,21 @@ class ConsLoAtt implements ILoAtt {
   public boolean hasAttribute(String name) {
     return this.first.hasAttribute(name) || this.rest.hasAttribute(name);
   }
+
+  public ILoAtt updateAttribute(String name, String value) {
+    return new ConsLoAtt(this.first.updateAttribute(name, value), this.rest.updateAttribute(name, value));
+  }
 }
 
 class MtLoAtt implements ILoAtt {
 
   public boolean hasAttribute(String name) {
     return false;
+  }
+
+  @Override
+  public ILoAtt updateAttribute(String name, String value) {
+    return this;
   }
 }
 
@@ -196,6 +243,15 @@ class Att {
 
   public boolean hasAttribute(String name) {
     return this.name.equals(name);
+  }
+
+  public Att updateAttribute(String name, String value) {
+    if (this.name.equals(name)) {
+      return new Att(name, value);
+    }
+    else {
+      return this;
+    }
   }
 }
 
@@ -261,5 +317,22 @@ class ExamplesXML {
             t.checkExpect(xml2.hasAttributeInTag("yell", "volume"), true) &&
             t.checkExpect(xml3.hasAttributeInTag("yell", "duration"), true) &&
             t.checkExpect(xml3.hasAttributeInTag("yell", "hangtime"), false);
+  }
+
+  boolean testRenderAsString(Tester t) {
+    return t.checkExpect(xml1.renderAsString(), "Alex Perez") &&
+            t.checkExpect(xml2.renderAsString(),"Alex Perez") &&
+            t.checkExpect(xml3.renderAsString(), "Alex Perez Alex Perez bleep bloop Alex Perez");
+  }
+
+  boolean testUpdateAttribute(Tester t) {
+    return t.checkExpect(xml2.updateAttribute("volume", "somethingRidiculous"), new ConsLoXMLFrag(
+            new Tagged(
+                    new Tag("yell", new ConsLoAtt(
+                            new Att("volume", "somethingRidiculous"),
+                            new ConsLoAtt(att2,
+                                    new ConsLoAtt(att3,
+                                            new MtLoAtt())))), xml1),
+            new MtLoXMLFrag()));
   }
 }
