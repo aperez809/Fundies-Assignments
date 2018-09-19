@@ -5,6 +5,16 @@ import java.awt.Color;
 interface IPaint {
   // return color of paint after any operations (if applicable)
   Color getFinalColor();
+
+  // count the number of paints involved in final
+  int countPaints();
+
+  // count the total number of operations were involved in making the color
+  int countMixes();
+
+  // count the number of levels of nesting in the formula
+  int formulaDepth();
+
 }
 
 class Solid implements IPaint {
@@ -19,6 +29,18 @@ class Solid implements IPaint {
   public Color getFinalColor() {
     return this.color;
   }
+
+  public int countPaints() {
+    return 1;
+  }
+
+  public int countMixes() {
+    return 0;
+  }
+
+  public int formulaDepth() {
+    return 0;
+  }
 }
 
 class Combo implements IPaint {
@@ -30,16 +52,38 @@ class Combo implements IPaint {
     this.operation = operation;
   }
 
-
   // Get color of paint
   // calls getFinalColor() on operation (an IMixture), which can be 1 of 3 things
   public Color getFinalColor() {
     return this.operation.getFinalColor();
   }
+
+  public int countPaints() {
+    return this.operation.countPaints();
+  }
+
+  public int countMixes() {
+    return this.operation.countMixes();
+  }
+
+  public int formulaDepth() {
+    return this.operation.formulaDepth();
+  }
 }
 
 interface IMixture {
+  // return final color of paint
   Color getFinalColor();
+
+  // return number of paints in mixture
+  int countPaints();
+
+  // how many mixtures were involved in this color
+  int countMixes();
+
+  // count how many levels of nesting there are in the formula
+  // ravioli ravioli, give me the formuoli
+  int formulaDepth();
 }
 
 class Darken implements IMixture {
@@ -53,6 +97,18 @@ class Darken implements IMixture {
   // recursively calls getFinalColor to check if there are underlying Combos or just a solid
   public Color getFinalColor() {
     return this.color.getFinalColor().darker();
+  }
+
+  public int countPaints() {
+    return 1 + this.color.countPaints();
+  }
+
+  public int countMixes() {
+    return 1 + this.color.countMixes();
+  }
+
+  public int formulaDepth() {
+    return 1 + this.color.formulaDepth();
   }
 }
 
@@ -69,6 +125,18 @@ class Brighten implements IMixture {
   public Color getFinalColor() {
     return this.color.getFinalColor().brighter();
   }
+
+  public int countPaints() {
+    return 1 + this.color.countPaints();
+  }
+
+  public int countMixes() {
+    return 1 + this.color.countMixes();
+  }
+
+  public int formulaDepth() {
+    return 1 + this.color.formulaDepth();
+  }
 }
 
 class Blend implements IMixture {
@@ -82,19 +150,34 @@ class Blend implements IMixture {
 
   // return final color of top and bottom with getFinalColor
   public Color getFinalColor() {
-    return this.top.getFinalColor();
+    return getFinalColorHelp(this.top.getFinalColor(), this.bottom.getFinalColor());
   }
 
-  Color getFinalColorHelp() {
-    return null;
+  // takes in 2 Color objects and returns a new color object
+  Color getFinalColorHelp(Color top, Color bottom) {
+    return new Color(top.getRed()/2 + bottom.getRed()/2,
+            top.getGreen()/2 + bottom.getGreen()/2,
+            top.getBlue()/2 + bottom.getBlue()/2);
 
+  }
+
+  public int countPaints() {
+    return this.top.countPaints() + this.bottom.countPaints();
+  }
+
+  public int countMixes() {
+    return 1 + this.top.countMixes() + this.bottom.countMixes();
+  }
+
+  public int formulaDepth() {
+    return this.top.formulaDepth() + this.bottom.formulaDepth();
   }
 }
 
 class ExamplesPaint {
-  IPaint red = new Solid("red", new Color(255,0,0));
-  IPaint green = new Solid("green", new Color(0,255,0));
-  IPaint blue = new Solid("blue", new Color(0,0,255));
+  IPaint red = new Solid("red", new Color(255, 0, 0));
+  IPaint green = new Solid("green", new Color(0, 255, 0));
+  IPaint blue = new Solid("blue", new Color(0, 0, 255));
 
   IPaint brightRed = new Combo("bright red", new Brighten(red));
   IPaint purple = new Combo("purple", new Blend(red, blue));
@@ -105,10 +188,33 @@ class ExamplesPaint {
   IPaint pink = new Combo("pink", new Brighten(mauve));
   IPaint coral = new Combo("coral", new Blend(pink, khaki));
 
+  IPaint ridiculous = new Combo("ridiculous", new Blend(coral, pink));
+
 
   boolean testGetFinalColor(Tester t) {
-    return t.checkExpect(red.getFinalColor(), new Color(255,0,0)) &&
-            t.checkExpect(brightRed.getFinalColor(), new Color(255,0,0));
+    return t.checkExpect(red.getFinalColor(), new Color(255, 0, 0)) &&
+            t.checkExpect(purple.getFinalColor(), new Color(255 / 2, 0, 255 / 2)) &&
+            t.checkExpect(mauve.getFinalColor(), new Color(255 / 2 / 2 + 255 / 2 / 2, 63, 63));
   }
 
+  boolean testCountPaints(Tester t) {
+    return t.checkExpect(red.countPaints(), 1) &&
+            t.checkExpect(coral.countPaints(), 7) &&
+            t.checkExpect(brightRed.countPaints(), 2) &&
+            t.checkExpect(ridiculous.countPaints(), 12);
+  }
+
+  boolean testCountMixes(Tester t) {
+    return t.checkExpect(red.countMixes(), 0) &&
+            t.checkExpect(brightRed.countMixes(), 1) &&
+            t.checkExpect(coral.countMixes(), 6) &&
+            t.checkExpect(ridiculous.countMixes(), 11);
+  }
+
+  boolean testFormulaDepth(Tester t) {
+    return t.checkExpect(red.formulaDepth(), 0) &&
+            t.checkExpect(brightRed.formulaDepth(), 1) &&
+            t.checkExpect(coral.formulaDepth(), 4) &&
+            t.checkExpect(ridiculous.formulaDepth(), 5);
+  }
 }
