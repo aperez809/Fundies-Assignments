@@ -93,8 +93,13 @@ class Combo implements IPaint {
   }
 
   public String mixingFormula(int depth) {
-    return this.operation.mixingFormula(depth - 1);
+    if (depth == 0) {
+      return this.name;
+    } else {
+      return this.operation.mixingFormula(depth - 1);
+    }
   }
+
 
   public String mixingFormulaHelp() {
     return this.name;
@@ -121,128 +126,137 @@ interface IMixture {
 }
 
 class Darken implements IMixture {
-  IPaint color;
+  IPaint paint;
 
-  Darken(IPaint color) {
-    this.color = color;
+  Darken(IPaint paint) {
+    this.paint = paint;
   }
+
   // return final color of paint with getFinalColor then apply darker()
   // and return that result
   // recursively calls getFinalColor to check if there are underlying Combos or just a solid
   public Color getFinalColor() {
-    return this.color.getFinalColor().darker();
+    return this.paint.getFinalColor().darker();
   }
 
   public int countPaints() {
-    return 1 + this.color.countPaints();
+    return 1 + this.paint.countPaints();
   }
 
   public int countMixes() {
-    return 1 + this.color.countMixes();
+    return 1 + this.paint.countMixes();
   }
 
   public int formulaDepth() {
-    return 1 + this.color.formulaDepth();
+    return 1 + this.paint.formulaDepth();
   }
 
   public int formulaDepthHelp() {
-    return this.color.formulaDepthHelp();
+    return this.paint.formulaDepthHelp();
   }
 
   public String mixingFormula(int depth) {
     if (depth - 1 > 0) {
-      return "darken(" + this.color.mixingFormula(depth) + ")";
+      return "darken(" + this.paint.mixingFormula(depth) + ")";
     }
     else {
-      return "darken(" + this.color.mixingFormulaHelp() + ")";
+      return "darken(" + this.paint.mixingFormulaHelp() + ")";
     }
   }
 }
 
 class Brighten implements IMixture {
-  IPaint color;
+  IPaint paint;
 
-  Brighten(IPaint color) {
-    this.color = color;
+  Brighten(IPaint paint) {
+    this.paint = paint;
   }
 
   // return final color of paint with getFinalColor then apply brighter()
   // and return that result
   // recursively calls getFinalColor to check if there are underlying Combos or just a solid
   public Color getFinalColor() {
-    return this.color.getFinalColor().brighter();
+    return this.paint.getFinalColor().brighter();
   }
 
   public int countPaints() {
-    return 1 + this.color.countPaints();
+    return 1 + this.paint.countPaints();
   }
 
   public int countMixes() {
-    return 1 + this.color.countMixes();
+    return 1 + this.paint.countMixes();
   }
 
   public int formulaDepth() {
-    return 1 + this.color.formulaDepth();
+    return 1 + this.paint.formulaDepth();
   }
 
   public int formulaDepthHelp() {
-    return this.color.formulaDepthHelp();
+    return this.paint.formulaDepthHelp();
   }
 
   public String mixingFormula(int depth) {
     if (depth - 1 > 0) {
-      return "brighten(" + this.color.mixingFormula(depth) + ")";
+      return "brighten(" + this.paint.mixingFormula(depth) + ")";
     }
     else {
-      return "brighten(" + this.color.mixingFormulaHelp() + ")";
+      return "brighten(" + this.paint.mixingFormulaHelp() + ")";
     }
   }
 }
 
 class Blend implements IMixture {
-  IPaint top;
-  IPaint bottom;
+  IPaint paint1;
+  IPaint paint2;
 
-  Blend(IPaint top, IPaint bottom) {
-    this.top = top;
-    this.bottom = bottom;
+  Blend(IPaint paint1, IPaint paint2) {
+    this.paint1 = paint1;
+    this.paint2 = paint2;
   }
 
-  // return final color of top and bottom with getFinalColor
+  // return final color of paint1 and paint2 with getFinalColor
   public Color getFinalColor() {
-    return getFinalColorHelp(this.top.getFinalColor(), this.bottom.getFinalColor());
+    return getFinalColorHelp(this.paint1.getFinalColor(), this.paint2.getFinalColor());
   }
 
   // takes in 2 Color objects and returns a new color object
-  Color getFinalColorHelp(Color top, Color bottom) {
-    return new Color(top.getRed()/2 + bottom.getRed()/2,
-            top.getGreen()/2 + bottom.getGreen()/2,
-            top.getBlue()/2 + bottom.getBlue()/2);
+  Color getFinalColorHelp(Color paint1, Color paint2) {
+    return new Color(paint1.getRed() / 2 + paint2.getRed() / 2,
+            paint1.getGreen() / 2 + paint2.getGreen() / 2,
+            paint1.getBlue() / 2 + paint2.getBlue() / 2);
 
   }
 
   public int countPaints() {
-    return this.top.countPaints() + this.bottom.countPaints();
+    return this.paint1.countPaints() + this.paint2.countPaints();
   }
 
   public int countMixes() {
-    return 1 + this.top.countMixes() + this.bottom.countMixes();
+    return 1 + this.paint1.countMixes() + this.paint2.countMixes();
   }
 
   public int formulaDepth() {
-    return this.top.formulaDepthHelp() + this.bottom.formulaDepthHelp();
+    return this.paint1.formulaDepthHelp() + this.paint2.formulaDepthHelp();
   }
 
   public int formulaDepthHelp() {
-    return 1 + this.top.formulaDepthHelp() + this.bottom.formulaDepthHelp();
+    return 1 + this.paint1.formulaDepthHelp() + this.paint2.formulaDepthHelp();
   }
 
   public String mixingFormula(int depth) {
     if (depth > 0) {
-      return "blend(" + this.top.mixingFormula(depth) + ", " + this.bottom.mixingFormula(depth) + ")";
+      return "blend("
+              + this.paint1.mixingFormula(depth)
+              + ", "
+              + this.paint2.mixingFormula(depth)
+              + ")";
     }
     else {
-      return "blend(" + this.top.mixingFormulaHelp() + ", " + this.bottom.mixingFormulaHelp() + ")";
+      return "blend("
+              + this.paint1.mixingFormulaHelp()
+              + ", "
+              + this.paint2.mixingFormulaHelp()
+              + ")";
     }
   }
 }
@@ -265,37 +279,41 @@ class ExamplesPaint {
 
 
   boolean testGetFinalColor(Tester t) {
-    return t.checkExpect(red.getFinalColor(), new Color(255, 0, 0)) &&
-            t.checkExpect(purple.getFinalColor(), new Color(255 / 2, 0, 255 / 2)) &&
-            t.checkExpect(mauve.getFinalColor(), new Color(255 / 2 / 2 + 255 / 2 / 2, 63, 63));
+    return t.checkExpect(red.getFinalColor(), new Color(255, 0, 0))
+            && t.checkExpect(purple.getFinalColor(), new Color(255 / 2, 0, 255 / 2))
+            && t.checkExpect(mauve.getFinalColor(), new Color(255 / 2 / 2 + 255 / 2 / 2, 63, 63));
   }
 
   boolean testCountPaints(Tester t) {
-    return t.checkExpect(red.countPaints(), 1) &&
-            t.checkExpect(coral.countPaints(), 7) &&
-            t.checkExpect(brightRed.countPaints(), 2) &&
-            t.checkExpect(ridiculous.countPaints(), 12);
+    return t.checkExpect(red.countPaints(), 1)
+            && t.checkExpect(coral.countPaints(), 7)
+            && t.checkExpect(brightRed.countPaints(), 2)
+            && t.checkExpect(ridiculous.countPaints(), 12);
   }
 
   boolean testCountMixes(Tester t) {
-    return t.checkExpect(red.countMixes(), 0) &&
-            t.checkExpect(brightRed.countMixes(), 1) &&
-            t.checkExpect(coral.countMixes(), 6) &&
-            t.checkExpect(ridiculous.countMixes(), 11);
+    return t.checkExpect(red.countMixes(), 0)
+            && t.checkExpect(brightRed.countMixes(), 1)
+            && t.checkExpect(coral.countMixes(), 6)
+            && t.checkExpect(ridiculous.countMixes(), 11);
   }
 
   boolean testFormulaDepth(Tester t) {
-    return t.checkExpect(red.formulaDepth(), 0) &&
-            t.checkExpect(brightRed.formulaDepth(), 1) &&
-            t.checkExpect(coral.formulaDepth(), 4) &&
-            t.checkExpect(ridiculous.formulaDepth(), 8);
+    return t.checkExpect(red.formulaDepth(), 0)
+            && t.checkExpect(brightRed.formulaDepth(), 1)
+            && t.checkExpect(yellow.formulaDepth(), 2)
+            && t.checkExpect(coral.formulaDepth(), 4)
+            && t.checkExpect(ridiculous.formulaDepth(), 8);
   }
 
   boolean testMixingFormula(Tester t) {
-    return t.checkExpect(red.mixingFormula(0), "red") &&
-            t.checkExpect(brightRed.mixingFormula(1), "brighten(red)") &&
-            t.checkExpect(coral.mixingFormula(4),
-                    "blend(brighten(blend(blend(red, blue), blend(red, green))), blend(red, green))") &&
-            t.checkExpect(coral.mixingFormula(3), "blend(brighten(blend(purple, khaki)), blend(red, green))");
+    return t.checkExpect(red.mixingFormula(0), "red")
+            && t.checkExpect(brightRed.mixingFormula(1), "brighten(red)")
+            && t.checkExpect(coral.mixingFormula(4),
+                    "blend(brighten(blend(blend(red, blue), blend(red, green))), " +
+                            "blend(red, green))")
+            && t.checkExpect(coral.mixingFormula(3), "blend(brighten(blend(" +
+                    "purple, khaki)), blend(red, green))")
+            && t.checkExpect(coral.mixingFormula(0), "coral");
   }
 }
