@@ -228,7 +228,7 @@ class Darken implements IMixture {
   }
 
   public int formulaDepth() {
-    return 1 + this.paint.formulaDepthHelp();
+    return this.paint.formulaDepthHelp();
   }
 
   public int formulaDepthHelp() {
@@ -291,7 +291,7 @@ class Brighten implements IMixture {
   }
 
   public int formulaDepth() {
-    return 1 + this.paint.formulaDepthHelp();
+    return 1 + this.paint.formulaDepth();
   }
 
   public int formulaDepthHelp() {
