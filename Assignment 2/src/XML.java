@@ -1,45 +1,57 @@
 import tester.Tester;
 
 interface ILoXMLFrag {
+
+  // what is the length of the list's contents?
   int contentLength();
 
+  // does a tag with this name exist in the list?
   boolean hasTag(String name);
 
+  // does an attribute with this name exist in the list?
   boolean hasAttribute(String name);
 
+  // does a given attribute exist in a given tag in this list?
   boolean hasAttributeInTag(String tagName, String attName);
 
+  // produce a new list of XMLFrags with any attributes of the
+  // given name set to the given value
   ILoXMLFrag updateAttribute(String name, String value);
 
+  // produce a string composed of the plaintext contents of this list
   String renderAsString();
 
 }
 
 class MtLoXMLFrag implements ILoXMLFrag {
+
+  // what is the length of the list's contents?
   public int contentLength() {
     return 0;
   }
 
-  //does object contain a tag with given name?
+  // does a tag with this name exist in the list?
   public boolean hasTag(String name) {
     return false;
   }
 
-  //does object contain an attribute with given name?
+  // does an attribute with this name exist in the list?
   public boolean hasAttribute(String name) {
     return false;
   }
 
-  //does object contain an attribute with given name inside of a tag of a given name?
+  // does the given attribute exist in the given tag in this list?
   public boolean hasAttributeInTag(String tagName, String attName) {
     return false;
   }
 
-  //update all instances of attribute with given name to the given value
+  // produce a new list of XMLFrags with any attributes of the
+  // given name set to the given value
   public ILoXMLFrag updateAttribute(String name, String value) {
     return this;
   }
 
+  // produce a string composed of the plaintext contents of this list
   public String renderAsString() {
     return "";
   }
@@ -57,29 +69,61 @@ class ConsLoXMLFrag implements ILoXMLFrag {
     this.rest = rest;
   }
 
-  //how many total characters in the objects within this list?
+  /* Template:
+  Fields:
+  this.first ... IXMLFrag
+  this.rest  ... ILoXMLFrag
+
+  Methods:
+  this.contentLength()                            ... int
+  this.hasTag(String name)                        ... boolean
+  this.hasAttribute(String name)                  ... boolean
+  this.hasAttributeInTag(String name)             ... boolean
+  this.updateAttribute(String name, String value) ... ILoXMLFrag
+  this.renderAsString()                           ... String
+
+  Methods of Fields:
+  this.first.contentLength()                            ... int
+  this.first.hasTag(String name)                        ... boolean
+  this.first.hasAttribute(String name)                  ... boolean
+  this.first.hasAttributeInTag(String name)             ... boolean
+  this.first.updateAttribute(String name, String value) ... ILoXMLFrag
+  this.first.renderAsString()                           ... String
+
+  this.rest.contentLength()                            ... int
+  this.rest.hasTag(String name)                        ... boolean
+  this.rest.hasAttribute(String name)                  ... boolean
+  this.rest.hasAttributeInTag(String name)             ... boolean
+  this.rest.updateAttribute(String name, String value) ... ILoXMLFrag
+  this.rest.renderAsString()                           ... String
+   */
+
+
+
+  // what is the length of the list's contents?
   public int contentLength() {
     return this.first.contentLength() + this.rest.contentLength();
   }
 
-  //does object contain a tag with given name?
+  // does a tag with this name exist in the list?
   public boolean hasTag(String name) {
     return this.first.hasTag(name)
             || this.rest.hasTag(name);
   }
 
-  //does object contain an attribute with given name?
+  // does an attribute with this name exist in the list?
   public boolean hasAttribute(String name) {
     return this.first.hasAttribute(name)
             || this.rest.hasAttribute(name);
   }
 
-  //does object contain an attribute with given name inside of a tag of a given name?
+  // does the given attribute exist in the given tag in this list?
   public boolean hasAttributeInTag(String tagName, String attName) {
     return this.first.hasAttributeInTag(tagName, attName)
             || this.rest.hasAttributeInTag(tagName, attName);
   }
 
+  // produce a string composed of the plaintext contents of this list
   public String renderAsString() {
     if (this.rest.renderAsString().equals("")) {
       return this.first.renderAsString() + this.rest.renderAsString();
@@ -90,6 +134,8 @@ class ConsLoXMLFrag implements ILoXMLFrag {
 
   }
 
+  // produce a new list of XMLFrags with any attributes of the
+  // given name set to the given value
   public ILoXMLFrag updateAttribute(String name, String value) {
     return new ConsLoXMLFrag(this.first.updateAttribute(name, value),
             this.rest.updateAttribute(name, value));
@@ -97,16 +143,24 @@ class ConsLoXMLFrag implements ILoXMLFrag {
 }
 
 interface IXMLFrag {
+
+  // what is the length of the XMLFrag's contents?
   int contentLength();
 
+  // does a tag with this name exist in this XMLFrag?
   boolean hasTag(String name);
 
+  // does an attribute with this name exist in this XMLFrag?
   boolean hasAttribute(String name);
 
+  // does the given attribute exist in the given tag in this XMLFrag?
   boolean hasAttributeInTag(String tagName, String attName);
 
+  // produce a string from the plaintext contents of this XMLFrag
   String renderAsString();
 
+  // produce a new XMLFrag with any attributes of the
+  // given name set to the given value
   IXMLFrag updateAttribute(String name, String value);
 }
 
@@ -117,26 +171,51 @@ class Plaintext implements IXMLFrag {
     this.txt = txt;
   }
 
+
+  /* Template:
+  Fields:
+  this.txt ... String
+
+  Methods:
+  this.contentLength()                            ... int
+  this.hasTag(String name)                        ... boolean
+  this.hasAttribute(String name)                  ... boolean
+  this.hasAttributeInTag(String name)             ... boolean
+  this.updateAttribute(String name, String value) ... IXMLFrag
+  this.renderAsString()                           ... String
+
+  Methods of Fields:
+
+   */
+
+
+  // what is the length of the XMLFrag's contents?
   public int contentLength() {
     return this.txt.length();
   }
 
+  // does a tag with this name exist in this XMLFrag?
   public boolean hasTag(String name) {
     return false;
   }
 
+  // does an attribute with this name exist in this XMLFrag?
   public boolean hasAttribute(String name) {
     return false;
   }
 
+  // does the given attribute exist in the given tag in this XMLFrag?
   public boolean hasAttributeInTag(String tagName, String attName) {
     return false;
   }
 
+  // produce a string from the plaintext contents of this XMLFrag
   public String renderAsString() {
     return this.txt;
   }
 
+  // produce a new XMLFrag with any attributes of the
+  // given name set to the given value
   public IXMLFrag updateAttribute(String name, String value) {
     return this;
   }
@@ -151,29 +230,66 @@ class Tagged implements IXMLFrag {
     this.content = content;
   }
 
+  /* Template:
+  Fields:
+  this.tag ... Tag
+  this.content  ... ILoXMLFrag
+
+  Methods:
+  this.contentLength()                            ... int
+  this.hasTag(String name)                        ... boolean
+  this.hasAttribute(String name)                  ... boolean
+  this.hasAttributeInTag(String name)             ... boolean
+  this.updateAttribute(String name, String value) ... IXMLFrag
+  this.renderAsString()                           ... String
+
+  Methods of Fields:
+  this.tag.contentLength()                            ... int
+  this.tag.hasTag(String name)                        ... boolean
+  this.tag.hasAttribute(String name)                  ... boolean
+  this.tag.hasAttributeInTag(String name)             ... boolean
+  this.tag.updateAttribute(String name, String value) ... IXMLFrag
+  this.tag.renderAsString()                           ... String
+
+  this.content.contentLength()                            ... int
+  this.content.hasTag(String name)                        ... boolean
+  this.content.hasAttribute(String name)                  ... boolean
+  this.content.hasAttributeInTag(String name)             ... boolean
+  this.content.updateAttribute(String name, String value) ... ILoXMLFrag
+  this.content.renderAsString()                           ... String
+   */
+
+
+  // what is the length of the XMLFrag's contents?
   public int contentLength() {
     return this.content.contentLength();
   }
 
+  // does a tag with this name exist in this XMLFrag?
   public boolean hasTag(String name) {
     return this.tag.hasTag(name)
             || this.content.hasTag(name);
   }
 
+  // does an attribute with this name exist in this XMLFrag?
   public boolean hasAttribute(String name) {
     return this.tag.hasAttribute(name)
             || this.content.hasAttribute(name);
   }
 
+  // does the given attribute exist in the given tag in this XMLFrag?
   public boolean hasAttributeInTag(String tagName, String attName) {
     return this.tag.hasAttributeInTag(tagName, attName)
             || this.content.hasAttributeInTag(tagName, attName);
   }
 
+  // produce a string from the plaintext contents of this XMLFrag
   public String renderAsString() {
     return this.content.renderAsString();
   }
 
+  // produce a new XMLFrag with any attributes of the
+  // given name set to the given value
   public IXMLFrag updateAttribute(String name, String value) {
     return new Tagged(this.tag.updateAttribute(name, value),
             this.content.updateAttribute(name, value));
@@ -189,18 +305,39 @@ class Tag {
     this.atts = atts;
   }
 
+  /* Template:
+  Fields:
+  this.name ... String
+  this.att  ... ILoAtts
+
+  Methods:
+  this.hasTag(String name)                        ... boolean
+  this.hasAttribute(String name)                  ... boolean
+  this.hasAttributeInTag(String name)             ... boolean
+  this.updateAttribute(String name, String value) ... Tag
+
+  Methods of Fields:
+  this.atts.hasAttribute(String name)                  ... boolean
+  this.atts.updateAttribute(String name, String value) ... ILoAtt
+   */
+
+  // does the tag's name equal the given name?
   boolean hasTag(String name) {
     return this.name.equals(name);
   }
 
+  // does the tag contain an attribute of the given name?
   boolean hasAttribute(String name) {
     return this.atts.hasAttribute(name);
   }
 
+  // does the tag's name equal the given name and
+  // contain an attribute of the given name?
   boolean hasAttributeInTag(String tagName, String attName) {
     return this.name.equals(tagName) && this.atts.hasAttribute(attName);
   }
 
+  // produce a new Tag with the given attribute set to the given value
   Tag updateAttribute(String name, String value) {
     return new Tag(this.name, this.atts.updateAttribute(name, value));
   }
@@ -211,8 +348,11 @@ class Tag {
 
 // List of Attributes implementation
 interface ILoAtt {
+
+  // does an attribute of this name exist in the list?
   boolean hasAttribute(String name);
 
+  // produce a new ILoAtt with the given attribute set to the given value
   ILoAtt updateAttribute(String name, String value);
 }
 
@@ -225,11 +365,30 @@ class ConsLoAtt implements ILoAtt {
     this.rest = rest;
   }
 
+  /* Template:
+  Fields:
+  this.first ... Att
+  this.rest  ... ILoAtt
+
+  Methods:
+  this.hasAttribute(String name)                  ... boolean
+  this.updateAttribute(String name, String value) ... ILoAtt
+
+  Methods of Fields:
+  this.first.hasAttribute(String name)                  ... boolean
+  this.first.updateAttribute(String name, String value) ... Att
+
+  this.content.hasAttribute(String name)                  ... boolean
+  this.content.updateAttribute(String name, String value) ... ILoAtt
+   */
+
+  // does an attribute of this name exist in the list?
   public boolean hasAttribute(String name) {
     return this.first.hasAttribute(name)
             || this.rest.hasAttribute(name);
   }
 
+  // produce a new ILoAtt with the given attribute set to the given value
   public ILoAtt updateAttribute(String name, String value) {
     return new ConsLoAtt(this.first.updateAttribute(name, value),
             this.rest.updateAttribute(name, value));
@@ -238,10 +397,12 @@ class ConsLoAtt implements ILoAtt {
 
 class MtLoAtt implements ILoAtt {
 
+  // does an attribute of this name exist in the list?
   public boolean hasAttribute(String name) {
     return false;
   }
 
+  // produce a new ILoAtt with the given attribute set to the given value
   public ILoAtt updateAttribute(String name, String value) {
     return this;
   }
@@ -257,10 +418,28 @@ class Att {
     this.value = value;
   }
 
+  /* Template:
+  Fields:
+  this.name ... String
+  this.value  ... String
+
+  Methods:
+  this.hasAttribute(String name)                  ... boolean
+  this.updateAttribute(String name, String value) ... Att
+
+  Methods of Fields:
+
+   */
+
+
+
+  // does the name of this attribute match the given name?
   public boolean hasAttribute(String name) {
     return this.name.equals(name);
   }
 
+  // produce a new Att where the attribute of the given name is set to the given value
+  // if it exists
   public Att updateAttribute(String name, String value) {
     if (this.hasAttribute(name)) {
       return new Att(name, value);
