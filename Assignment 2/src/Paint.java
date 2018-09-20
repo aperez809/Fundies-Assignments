@@ -15,6 +15,11 @@ interface IPaint {
   // count the number of levels of nesting in the formula
   int formulaDepth();
 
+  int formulaDepthHelp();
+
+  String mixingFormula(int depth);
+
+  String mixingFormulaHelp();
 }
 
 class Solid implements IPaint {
@@ -41,6 +46,19 @@ class Solid implements IPaint {
   public int formulaDepth() {
     return 0;
   }
+
+  public int formulaDepthHelp() {
+    return 0;
+  }
+
+  public String mixingFormula(int depth) {
+    return this.name;
+  }
+
+  public String mixingFormulaHelp() {
+    return this.name;
+  }
+
 }
 
 class Combo implements IPaint {
@@ -69,6 +87,18 @@ class Combo implements IPaint {
   public int formulaDepth() {
     return this.operation.formulaDepth();
   }
+
+  public int formulaDepthHelp() {
+    return this.operation.formulaDepthHelp();
+  }
+
+  public String mixingFormula(int depth) {
+    return this.operation.mixingFormula(depth - 1);
+  }
+
+  public String mixingFormulaHelp() {
+    return this.name;
+  }
 }
 
 interface IMixture {
@@ -84,6 +114,10 @@ interface IMixture {
   // count how many levels of nesting there are in the formula
   // ravioli ravioli, give me the formuoli
   int formulaDepth();
+
+  int formulaDepthHelp();
+
+  String mixingFormula(int depth);
 }
 
 class Darken implements IMixture {
@@ -109,6 +143,19 @@ class Darken implements IMixture {
 
   public int formulaDepth() {
     return 1 + this.color.formulaDepth();
+  }
+
+  public int formulaDepthHelp() {
+    return this.color.formulaDepthHelp();
+  }
+
+  public String mixingFormula(int depth) {
+    if (depth - 1 > 0) {
+      return "darken(" + this.color.mixingFormula(depth) + ")";
+    }
+    else {
+      return "darken(" + this.color.mixingFormulaHelp() + ")";
+    }
   }
 }
 
@@ -136,6 +183,19 @@ class Brighten implements IMixture {
 
   public int formulaDepth() {
     return 1 + this.color.formulaDepth();
+  }
+
+  public int formulaDepthHelp() {
+    return this.color.formulaDepthHelp();
+  }
+
+  public String mixingFormula(int depth) {
+    if (depth - 1 > 0) {
+      return "brighten(" + this.color.mixingFormula(depth) + ")";
+    }
+    else {
+      return "brighten(" + this.color.mixingFormulaHelp() + ")";
+    }
   }
 }
 
@@ -170,7 +230,20 @@ class Blend implements IMixture {
   }
 
   public int formulaDepth() {
-    return this.top.formulaDepth() + this.bottom.formulaDepth();
+    return this.top.formulaDepthHelp() + this.bottom.formulaDepthHelp();
+  }
+
+  public int formulaDepthHelp() {
+    return 1 + this.top.formulaDepthHelp() + this.bottom.formulaDepthHelp();
+  }
+
+  public String mixingFormula(int depth) {
+    if (depth > 0) {
+      return "blend(" + this.top.mixingFormula(depth) + ", " + this.bottom.mixingFormula(depth) + ")";
+    }
+    else {
+      return "blend(" + this.top.mixingFormulaHelp() + ", " + this.bottom.mixingFormulaHelp() + ")";
+    }
   }
 }
 
@@ -215,6 +288,14 @@ class ExamplesPaint {
     return t.checkExpect(red.formulaDepth(), 0) &&
             t.checkExpect(brightRed.formulaDepth(), 1) &&
             t.checkExpect(coral.formulaDepth(), 4) &&
-            t.checkExpect(ridiculous.formulaDepth(), 5);
+            t.checkExpect(ridiculous.formulaDepth(), 8);
+  }
+
+  boolean testMixingFormula(Tester t) {
+    return t.checkExpect(red.mixingFormula(0), "red") &&
+            t.checkExpect(brightRed.mixingFormula(1), "brighten(red)") &&
+            t.checkExpect(coral.mixingFormula(4),
+                    "blend(brighten(blend(blend(red, blue), blend(red, green))), blend(red, green))") &&
+            t.checkExpect(coral.mixingFormula(3), "blend(brighten(blend(purple, khaki)), blend(red, green))");
   }
 }
