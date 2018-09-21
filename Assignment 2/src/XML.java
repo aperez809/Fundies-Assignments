@@ -471,16 +471,16 @@ class ExamplesXML {
 
   Tag tag1 = new Tag("yell", loatt1);
   Tag tag2 = new Tag("smack", loatt2);
-  IXMLFrag plaintext1 = new Plaintext("Alex Perez");  // length 10
-  IXMLFrag plaintext2 = new Plaintext("bleep bloop"); // length 11
-  IXMLFrag plaintext3 = new Plaintext("I am ");
-  IXMLFrag plaintext4 = new Plaintext("XML");
-  IXMLFrag plaintext5 = new Plaintext("!");
-  IXMLFrag plaintext6 = new Plaintext("XM");
-  IXMLFrag plaintext7 = new Plaintext("L");
-  IXMLFrag plaintext8 = new Plaintext("I am XML!");
-  IXMLFrag plaintext9 = new Plaintext("X");
-  IXMLFrag plaintext10 = new Plaintext("ML");
+  IXMLFrag plainText1 = new Plaintext("Alex Perez");  // length 10
+  IXMLFrag plainText2 = new Plaintext("bleep bloop"); // length 11
+  IXMLFrag plainText3 = new Plaintext("I am ");
+  IXMLFrag plainText4 = new Plaintext("XML");
+  IXMLFrag plainText5 = new Plaintext("!");
+  IXMLFrag plainText6 = new Plaintext("XM");
+  IXMLFrag plainText7 = new Plaintext("L");
+  IXMLFrag plainText8 = new Plaintext("I am XML!");
+  IXMLFrag plainText9 = new Plaintext("X");
+  IXMLFrag plainText10 = new Plaintext("ML");
 
 
   Tag tag3 = new Tag("yell", new MtLoAtt());
@@ -491,41 +491,41 @@ class ExamplesXML {
 
   Tagged tagged3 = new Tagged(tag3, new ConsLoXMLFrag(
           new Tagged(tag4, new ConsLoXMLFrag(
-                  plaintext9, new MtLoXMLFrag())),
+                  plainText9, new MtLoXMLFrag())),
           new MtLoXMLFrag()));
 
-  ILoXMLFrag xml1 = new ConsLoXMLFrag(plaintext8, new MtLoXMLFrag());
+  ILoXMLFrag xml1 = new ConsLoXMLFrag(plainText8, new MtLoXMLFrag());
 
-  ILoXMLFrag xml2 = new ConsLoXMLFrag(plaintext3,
+  ILoXMLFrag xml2 = new ConsLoXMLFrag(plainText3,
           new ConsLoXMLFrag(new Tagged(tag3,
-                  new ConsLoXMLFrag(plaintext4, new MtLoXMLFrag())),
-                  new ConsLoXMLFrag(plaintext5, new MtLoXMLFrag())));
+                  new ConsLoXMLFrag(plainText4, new MtLoXMLFrag())),
+                  new ConsLoXMLFrag(plainText5, new MtLoXMLFrag())));
 
-  ILoXMLFrag xml3 = new ConsLoXMLFrag(plaintext3,
+  ILoXMLFrag xml3 = new ConsLoXMLFrag(plainText3,
           new ConsLoXMLFrag(
                   new Tagged(tag3,
                           new ConsLoXMLFrag(
                                   new Tagged(tag4,
-                                          new ConsLoXMLFrag(plaintext9, new MtLoXMLFrag())),
-                                  new ConsLoXMLFrag(plaintext10, new MtLoXMLFrag()))),
-                  new ConsLoXMLFrag(plaintext5, new MtLoXMLFrag())));
+                                          new ConsLoXMLFrag(plainText9, new MtLoXMLFrag())),
+                                  new ConsLoXMLFrag(plainText10, new MtLoXMLFrag()))),
+                  new ConsLoXMLFrag(plainText5, new MtLoXMLFrag())));
 
-  ILoXMLFrag xml4 = new ConsLoXMLFrag(plaintext3,
+  ILoXMLFrag xml4 = new ConsLoXMLFrag(plainText3,
           new ConsLoXMLFrag(
                   new Tagged(tag5,
                           new ConsLoXMLFrag(
                                   new Tagged(tag4,
-                                          new ConsLoXMLFrag(plaintext9, new MtLoXMLFrag())),
-                                  new ConsLoXMLFrag(plaintext10, new MtLoXMLFrag()))),
-          new ConsLoXMLFrag(plaintext5, new MtLoXMLFrag())));
+                                          new ConsLoXMLFrag(plainText9, new MtLoXMLFrag())),
+                                  new ConsLoXMLFrag(plainText10, new MtLoXMLFrag()))),
+          new ConsLoXMLFrag(plainText5, new MtLoXMLFrag())));
 
-  ILoXMLFrag xml5 = new ConsLoXMLFrag(plaintext3,
+  ILoXMLFrag xml5 = new ConsLoXMLFrag(plainText3,
           new ConsLoXMLFrag(
                   new Tagged(tag6,
                           new ConsLoXMLFrag(
                                   new Tagged(tag4,
-                                          new ConsLoXMLFrag(plaintext9, new MtLoXMLFrag())),
-                                  new ConsLoXMLFrag(plaintext10, new MtLoXMLFrag()))),
+                                          new ConsLoXMLFrag(plainText9, new MtLoXMLFrag())),
+                                  new ConsLoXMLFrag(plainText10, new MtLoXMLFrag()))),
                   new MtLoXMLFrag()));
 
   boolean testContentLength(Tester t) {
@@ -574,14 +574,14 @@ class ExamplesXML {
   boolean testUpdateAttribute(Tester t) {
     return t.checkExpect(xml2.updateAttribute("volume", "somethingRidiculous"), xml2)
             && t.checkExpect(xml5.updateAttribute("volume", "somethingRidiculous"),
-            new ConsLoXMLFrag(plaintext3,
+            new ConsLoXMLFrag(plainText3,
                     new ConsLoXMLFrag(
                             new Tagged(tag7,
                                     new ConsLoXMLFrag(
                                             new Tagged(tag4,
-                                                    new ConsLoXMLFrag(plaintext9,
+                                                    new ConsLoXMLFrag(plainText9,
                                                             new MtLoXMLFrag())),
-                                            new ConsLoXMLFrag(plaintext10, new MtLoXMLFrag()))),
+                                            new ConsLoXMLFrag(plainText10, new MtLoXMLFrag()))),
                             new MtLoXMLFrag())));
   }
 }

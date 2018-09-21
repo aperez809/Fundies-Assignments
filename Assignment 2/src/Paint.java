@@ -23,6 +23,8 @@ interface IPaint {
 
   // produce a string with the formula for a color (to a given depth)
   String mixingFormulaHelp();
+
+
 }
 
 class Solid implements IPaint {
@@ -70,6 +72,8 @@ class Solid implements IPaint {
 
   // count the number of levels of nesting in the formula
   public int formulaDepth() {
+    System.out.println("formula depth:");
+    System.out.println(this.name);
     return 0;
   }
 
@@ -140,11 +144,15 @@ class Combo implements IPaint {
 
   // count the number of levels of nesting in the formula
   public int formulaDepth() {
+    System.out.println("formula depth");
+    System.out.println(this.name);
     return this.operation.formulaDepth();
   }
 
   // count the number of levels of nesting in the formula
   public int formulaDepthHelp() {
+    System.out.println("formula depth");
+    System.out.println(this.name);
     return 1 + this.operation.formulaDepthHelp();
   }
 
@@ -405,10 +413,11 @@ class ExamplesPaint {
   IPaint purple = new Combo("purple", new Blend(red, blue));
   IPaint darkPurple = new Combo("dark purple", new Darken(purple));
   IPaint khaki = new Combo("khaki", new Blend(red, green));
+  IPaint khaki1 = new Combo("khaki1", new Blend(red, green));
   IPaint yellow = new Combo("yellow", new Brighten(khaki));
   IPaint mauve = new Combo("mauve", new Blend(purple, khaki));
   IPaint pink = new Combo("pink", new Brighten(mauve));
-  IPaint coral = new Combo("coral", new Blend(pink, khaki));
+  IPaint coral = new Combo("coral", new Blend(pink, khaki1));
 
   IPaint ridiculous = new Combo("ridiculous", new Blend(coral, pink));
 
@@ -434,6 +443,7 @@ class ExamplesPaint {
   }
 
   boolean testFormulaDepth(Tester t) {
+    System.out.println("formula depth"+ coral.formulaDepth());
     return t.checkExpect(red.formulaDepth(), 0)
             && t.checkExpect(brightRed.formulaDepth(), 1)
             && t.checkExpect(yellow.formulaDepth(), 2)
