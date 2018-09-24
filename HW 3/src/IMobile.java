@@ -17,6 +17,12 @@ interface IMobile {
   //is the mobile balanced?
   //i.e. no net torque on node (weight of node * length of strut)
   boolean isBalanced();
+
+  int curWidth();
+
+  int curWidthLeft();
+
+  int curWidthRight();
 }
 
 class Simple implements IMobile {
@@ -35,7 +41,6 @@ class Simple implements IMobile {
   }
 
   public int totalHeight() {
-    // TODO Auto-generated method stub
     return this.length + this.weight/10;
   }
 
@@ -43,9 +48,18 @@ class Simple implements IMobile {
     return true;
   }
 
-  int isBalancedHelp(int strutLength) {
-    return 0;
+  public int curWidth() {
+    return this.weight/10;
   }
+
+  public int curWidthLeft() {
+    return this.curWidth();
+  }
+
+  public int curWidthRight() {
+    return this.curWidth();
+  }
+
 }
 
 class Complex implements IMobile {
@@ -73,6 +87,18 @@ class Complex implements IMobile {
 
   public boolean isBalanced() {
     return (this.left.totalWeight() * this.leftside) == (this.right.totalWeight() * this.rightside);
+  }
+
+  public int curWidth() {
+    return (this.leftside + this.left.curWidthLeft()) + (this.rightside + this.right.curWidthRight());
+  }
+
+  public int curWidthLeft() {
+    return this.leftside + this.left.curWidthLeft();
+  }
+
+  public int curWidthRight() {
+    return this.rightside + this.left.curWidthRight();
   }
 }
 
@@ -105,4 +131,9 @@ class ExamplesMobiles {
             && t.checkExpect(example3.isBalanced(), false);
   }
 
+  boolean testCurWidth(Tester t) {
+    return t.checkExpect(exampleSimple.curWidth(), 2)
+            && t.checkExpect(exampleComplex.curWidth(), 13 + 13);
+  }
 }
+
