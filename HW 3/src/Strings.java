@@ -11,7 +11,15 @@ interface ILoString {
   // produces a new list sorted in alphabetical order
   ILoString sort();
 
-  ILoString insert(String name);
+  //inserts an item into the list if it comes before
+  // the first of the list alphabetically
+  ILoString insert(String word);
+
+  boolean isSorted();
+
+  ILoString reverse();
+
+  ILoString addAtEnd(String word);
 }
 
 // to represent an empty list of Strings
@@ -29,6 +37,18 @@ class MtLoString implements ILoString {
 
   public ILoString insert(String name) {
     return new ConsLoString(name, this);
+  }
+
+  public boolean isSorted() {
+    return true;
+  }
+
+  public ILoString reverse() {
+    return this;
+  }
+
+  public ILoString addAtEnd(String word) {
+    return new ConsLoString(word, this);
   }
 
 }
@@ -69,14 +89,34 @@ class ConsLoString implements ILoString {
   }
 
   //compare first of list to the accumulated list
-  public ILoString insert(String name) {
-    if (this.first.toLowerCase().compareTo(name.toLowerCase()) <= 0) {
-      return new ConsLoString(this.first, this.rest.insert(name));
+  public ILoString insert(String word) {
+    if (this.first.toLowerCase().compareTo(word.toLowerCase()) <= 0) {
+      return new ConsLoString(this.first, this.rest.insert(word));
     }
     else {
-      return new ConsLoString(name, this);
+      return new ConsLoString(word, this);
     }
   }
+
+  public boolean isSorted() {
+    //return (this.first.isSortedHelp(other) && this.rest.isSorted(other);
+    return this.first.isSortedHelp();
+  }
+
+  public boolean isSortedHelp(ILoString other) {
+    return true;
+  }
+
+  public ILoString reverse() {
+    return this.rest.reverse().addAtEnd(this.first);
+  }
+
+  public ILoString addAtEnd(String s) {
+    return new ConsLoString(this.first, this.rest.addAtEnd(s));
+  }
+
+
+
 }
 
 // to represent examples for lists of strings
@@ -101,18 +141,18 @@ class ExamplesStrings{
 
   // test the method combine for the lists of Strings
   boolean testCombine(Tester t){
-    return t.checkExpect(this.mary.combine(), "Mary had a little lamb.")
-            && t.checkExpect(this.str2.combine(),
+    return t.checkExpect(mary.combine(), "Mary had a little lamb.")
+            && t.checkExpect(str2.combine(),
             "My name is Alex Perez, Alex Perez is my name.");
   }
 
   boolean testSort(Tester t) {
-    return t.checkExpect(this.mary.sort(), new ConsLoString("a ",
+    return t.checkExpect(mary.sort(), new ConsLoString("a ",
             new ConsLoString("had ",
                     new ConsLoString("lamb.",
                             new ConsLoString("little ",
                                     new ConsLoString("Mary ", new MtLoString()))))))
-            && t.checkExpect(this.str2.sort(), new ConsLoString("Alex ",
+            && t.checkExpect(str2.sort(), new ConsLoString("Alex ",
             new ConsLoString("Alex ",
                     new ConsLoString("is ",
                             new ConsLoString("is ",
@@ -123,5 +163,25 @@ class ExamplesStrings{
                                                                     new ConsLoString("Perez ",
                                                                             new ConsLoString("Perez, ",
                                                                             new MtLoString())))))))))));
+  }
+
+  boolean testReverse(Tester t) {
+    return t.checkExpect(mary.reverse(), new ConsLoString("lamb.",
+            new ConsLoString("little ",
+                    new ConsLoString("a ",
+                            new ConsLoString("had ",
+                                    new ConsLoString("Mary ",
+                                            new MtLoString()))))))
+            && t.checkExpect(str2.reverse(), new ConsLoString("name.",
+            new ConsLoString("my ",
+                    new ConsLoString("is ",
+                            new ConsLoString("Perez ",
+                                    new ConsLoString("Alex ",
+                                            new ConsLoString("Perez, ",
+                                                    new ConsLoString("Alex ",
+                                                            new ConsLoString("is ",
+                                                                    new ConsLoString("name ",
+                                                                            new ConsLoString("My ",
+                                                                                    new MtLoString())))))))))));
   }
 }
