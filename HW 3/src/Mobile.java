@@ -143,9 +143,9 @@ class Complex implements IMobile {
     double leftMiddle = (double)(this.leftside / 2);
     double rightMiddle = (double)(this.rightside / 2);
     WorldImage leftStem = new LineImage(new Posn(0, this.leftside),
-            Color.BLACK).movePinhole(0, 0 - leftMiddle);
+            Color.BLACK).movePinhole(0 - this.length, 0 - leftMiddle);
     WorldImage rightStem = new LineImage(new Posn(0, this.rightside),
-            Color.BLACK).movePinhole(0, 0 - rightMiddle);
+            Color.BLACK).movePinhole(0 - this.length, 0 - rightMiddle);
 
     return new OverlayImage(
             new RotateImage(new OverlayImage(new RotateImage(this.left.drawMobile(), 270),
