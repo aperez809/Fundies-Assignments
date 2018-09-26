@@ -18,11 +18,17 @@ interface IMobile {
   //i.e. no net torque on node (weight of node * length of strut)
   boolean isBalanced();
 
+  //gets the true width of the mobile
   int curWidth();
 
+  //used to traverse only the left side of the mobile at every split
   int curWidthLeft();
 
+  //used to traverse only the right side of the mobile at every split
   int curWidthRight();
+
+  //combine 2 balanced mobiles together to create
+  IMobile buildMobile(IMobile that);
 }
 
 class Simple implements IMobile {
@@ -49,7 +55,11 @@ class Simple implements IMobile {
   }
 
   public int curWidth() {
-    return this.weight/10;
+    if (this.weight % 10 == 0) {
+      return this.weight / 10;
+    } else {
+      return this.weight / 10 + 1;
+    }
   }
 
   public int curWidthLeft() {
@@ -59,6 +69,11 @@ class Simple implements IMobile {
   public int curWidthRight() {
     return this.curWidth();
   }
+
+  public IMobile buildMobile(IMobile that) {
+    return null;
+  }
+
 
 }
 
@@ -98,8 +113,14 @@ class Complex implements IMobile {
   }
 
   public int curWidthRight() {
-    return this.rightside + this.left.curWidthRight();
+    return this.rightside + this.right.curWidthRight();
   }
+
+  public IMobile buildMobile(IMobile that) {
+    return null;
+  }
+
+
 }
 
 class ExamplesMobiles {
@@ -133,7 +154,9 @@ class ExamplesMobiles {
 
   boolean testCurWidth(Tester t) {
     return t.checkExpect(exampleSimple.curWidth(), 2)
-            && t.checkExpect(exampleComplex.curWidth(), 13 + 13);
+            && t.checkExpect(exampleComplex.curWidth(), 26);
   }
+
+  //boolean test
 }
 

@@ -133,9 +133,9 @@ class ConsLoString implements ILoString {
     return new ConsLoString(this.first, that.interleave(this.rest));
   }
 
-  public ILoString merge(ILoString that) {
-    return new ConsLoString(this.first, this.rest.append(that));
-  }
+  //public ILoString merge(ILoString that) {
+  //  return new ConsLoString(this.first, this.rest.append(that));
+  //}
 
   public ILoString reverse() {
     return this.rest.reverse().append(this.first);
