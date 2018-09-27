@@ -15,17 +15,38 @@ interface ILoString {
   // the first of the list alphabetically
   ILoString insert(String word);
 
+  //is the list sorted?
   boolean isSorted(ILoString acc);
 
+  //is the list sorted?
+  boolean isSortedHelp(String first);
+
+  //reverses the list
   ILoString reverse();
+
 
   ILoString append(String word);
 
-  boolean isSortedHelp(String first);
-
+  //get the rest of the list, depending on type
   ILoString getRest();
 
-  ILoString interleave(ILoString rest);
+  String getFirst();
+
+  //given two lists, odd indices are filled with items from the first list
+  //and even indices are filled with items from second list
+  ILoString interleave(ILoString that);
+
+  //add two lists together and return the sorted version of it
+  ILoString merge(ILoString that);
+
+  //does this list consist of pairs of the same value?
+  boolean doubleList();
+
+  boolean doubleListHelper(ILoString that);
+
+  boolean isPalindromeList(ILoString rest);
+
+  boolean isPalHelp(String first);
 }
 
 // to represent an empty list of Strings
@@ -35,6 +56,14 @@ class MtLoString implements ILoString {
   // combine all Strings in this list into one
   public String combine() {
     return "";
+  }
+
+  public boolean isPalHelp(String first) {
+    return true;
+  }
+
+  public boolean isPalindromeList(ILoString that) {
+    return true;
   }
 
   public ILoString sort() {
@@ -57,9 +86,26 @@ class MtLoString implements ILoString {
     return this;
   }
 
+  public String getFirst() {
+    return "";
+  }
+
   public ILoString interleave(ILoString that) {
+    return that;
+  }
+
+  public ILoString merge(ILoString that) {
     return this;
   }
+
+  public boolean doubleList() {
+    return true;
+  }
+
+  public boolean doubleListHelper(ILoString that) {
+    return true;
+  }
+
 
   public ILoString reverse() {
     return this;
@@ -74,6 +120,11 @@ class MtLoString implements ILoString {
 // to represent a nonempty list of Strings
 class ConsLoString implements ILoString {
   String first;
+
+  public String getFirst() {
+    return this.first;
+  }
+
   ILoString rest;
 
   ConsLoString(String first, ILoString rest){
@@ -117,7 +168,6 @@ class ConsLoString implements ILoString {
   }
 
   public boolean isSorted(ILoString that) {
-    //return this.first.isSortedHelp(acc) && this.rest.isSorted(acc.getRest());
     return that.isSortedHelp(this.first) && this.rest.isSorted(that.getRest());
   }
 
@@ -133,9 +183,27 @@ class ConsLoString implements ILoString {
     return new ConsLoString(this.first, that.interleave(this.rest));
   }
 
-  //public ILoString merge(ILoString that) {
-  //  return new ConsLoString(this.first, this.rest.append(that));
-  //}
+  public ILoString merge(ILoString that) {
+    return this.interleave(that).sort();
+  }
+
+  public boolean doubleList() {
+    return this.doubleListHelper(this.rest);
+  }
+
+  public boolean doubleListHelper(ILoString that) {
+    return this.first.equals(that.getFirst())
+            && this.rest.doubleListHelper(that.getRest());
+  }
+
+  public boolean isPalindromeList(ILoString that) {
+    return that.isPalHelp(this.first) && this.rest.isPalindromeList(that.getRest());
+  }
+
+
+  public boolean isPalHelp(String that) {
+    return this.first.equals(that);
+  }
 
   public ILoString reverse() {
     return this.rest.reverse().append(this.first);
@@ -145,7 +213,9 @@ class ConsLoString implements ILoString {
     return new ConsLoString(this.first, this.rest.append(first));
   }
 
-
+  public boolean listsEqual(ILoString that) {
+    return this.first.equals(that);
+  }
 
 }
 
@@ -173,6 +243,21 @@ class ExamplesStrings{
 
   ILoString str2Sort = str2.sort();
 
+  ILoString doubles = new ConsLoString("beep ",
+          new ConsLoString("beep ",
+                  new ConsLoString("boop ",
+                          new ConsLoString("boop ",
+                                  new MtLoString()))));
+
+  //"palindrome this is a a is this palindrome"
+  ILoString pal = new ConsLoString("palindrome ",
+          new ConsLoString("this ",
+          new ConsLoString("is ",
+                  new ConsLoString("a ",
+  new ConsLoString("a ",
+          new ConsLoString("is ",
+                  new ConsLoString("this ",
+                          new ConsLoString("palindrome ", new MtLoString()))))))));
 
 
   // test the method combine for the lists of Strings
@@ -220,6 +305,41 @@ class ExamplesStrings{
                                                                     new ConsLoString("Mary ",
                                                                             new ConsLoString("Mary ",
                                                                                     new MtLoString())))))))))));
+}
+
+
+  boolean testMerge(Tester t) {
+    return t.checkExpect(str2Sort.merge(marySort), new ConsLoString("a ",
+            new ConsLoString("Alex ",
+                    new ConsLoString("Alex ",
+                            new ConsLoString("had ",
+                                    new ConsLoString("is ",
+                                            new ConsLoString("is ",
+                                                    new ConsLoString("lamb.",
+                                                            new ConsLoString("little ",
+                                                                    new ConsLoString("Mary ",
+                                                                            new ConsLoString("My ",
+                                                                                    new ConsLoString("my ",
+                                                                                            new ConsLoString("name ",
+                                                                                                    new ConsLoString("name.",
+                                                                                                            new ConsLoString("Perez ",
+                                                                                                                    new ConsLoString("Perez, ",
+                                                                                                                            new MtLoString()))))))))))))))))
+            && t.checkExpect(marySort.merge(marySort), new ConsLoString("a ",
+            new ConsLoString("a ",
+                    new ConsLoString("had ",
+                            new ConsLoString("had ",
+                                    new ConsLoString("lamb.",
+                                            new ConsLoString("lamb.",
+                                                    new ConsLoString("little ",
+                                                            new ConsLoString("little ",
+                                                                    new ConsLoString("Mary ",
+                                                                            new ConsLoString("Mary ",
+                                                                                    new MtLoString())))))))))));
+  }
+
+  boolean testDoubleList(Tester t) {
+    return t.checkExpect(doubles.doubleList(), true);
   }
 
   boolean testReverse(Tester t) {
@@ -240,5 +360,10 @@ class ExamplesStrings{
                                                                     new ConsLoString("name ",
                                                                             new ConsLoString("My ",
                                                                                     new MtLoString())))))))))));
+  }
+
+  boolean testIsPalindromeList(Tester t) {
+    return t.checkExpect(pal.isPalindromeList(pal.reverse()), true)
+            && t.checkExpect(mary.isPalindromeList(pal.reverse()), false);
   }
 }

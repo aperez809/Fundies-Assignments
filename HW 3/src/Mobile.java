@@ -33,6 +33,8 @@ interface IMobile {
   //combine 2 balanced mobiles together to create
   IMobile buildMobile(IMobile that, int length, int strut);
 
+  IMobile buildMobileHelp(IMobile that, int length, int strutOne, int strutTwo);
+
   WorldImage drawMobile();
 }
 
@@ -76,7 +78,17 @@ class Simple implements IMobile {
   }
 
   public IMobile buildMobile(IMobile that, int length, int strut) {
-    return this;
+    return this.buildMobileHelp(that, length, strut - 1, strut - (strut - 1));
+  }
+
+  public IMobile buildMobileHelp(IMobile that, int length, int strutOne, int strutTwo) {
+    IMobile answer = new Complex(length, strutOne, strutTwo, this, that);
+    if (answer.isBalanced()) {
+      return new Complex(length, strutOne, strutTwo, this, that);
+    }
+    else {
+      return this.buildMobileHelp(that, length, strutOne-1, strutTwo + 1);
+    }
   }
 
   public WorldImage drawMobile() {
@@ -128,7 +140,18 @@ class Complex implements IMobile {
   //build a new mobile such that the lengths of the left and right
   //struts create 0 net torque
   public IMobile buildMobile(IMobile that, int length, int strut) {
-    return new Complex(length, 0, 0, this, that);
+    return this.buildMobileHelp(that, length, strut - 1, strut - (strut - 1));
+  }
+
+  public IMobile buildMobileHelp(IMobile that, int length, int strutOne, int strutTwo) {
+    IMobile answer = new Complex(length, strutOne, strutTwo, this, that);
+    if (answer.isBalanced()) {
+      return new Complex(length, strutOne, strutTwo, this, that);
+    }
+    else {
+      return this.buildMobileHelp(that, length, strutOne - 1, strutTwo + 1);
+    }
+
   }
 
   /*public WorldImage drawMobile() {
@@ -156,9 +179,6 @@ class Complex implements IMobile {
                     90));
   }
 
-  public IMobile buildMobile(IMobile that) {
-    return null;
-  }
 
 
 }
@@ -197,9 +217,14 @@ class ExamplesMobiles {
             && t.checkExpect(exampleComplex.curWidth(), 26);
   }
 
-  //boolean test
+  boolean testBuildMobile(Tester t) {
+    return t.checkExpect(exampleSimple.buildMobile(exampleSimple, 2, 4),
+            new Complex(2, 2, 2, exampleSimple, exampleSimple))
+            && t.checkExpect(exampleComplex.buildMobile(exampleComplex, 1, 50),
+            new Complex(1, 25, 25, exampleComplex, exampleComplex));
+  }
 
-  boolean testFailure(Tester t) {
+  /*boolean testFailure(Tester t) {
     return t.checkExpect(
             new ScaleImageXY(new RectangleImage(60, 40, OutlineMode.SOLID, Color.GRAY), 0.5, 0.25),
             new RectangleImage(30, 15, OutlineMode.SOLID, Color.GRAY));
@@ -210,6 +235,6 @@ class ExamplesMobiles {
     WorldScene s = new WorldScene(500, 500);
     return c.drawScene(s.placeImageXY(exampleComplex.drawMobile(), 250, 250))
             && c.show();
-  }
-}
+  */}
+//}
 
