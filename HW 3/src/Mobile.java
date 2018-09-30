@@ -3,9 +3,8 @@ import tester.*;                // The tester library
 import javalib.worldimages.*;   // images, like RectangleImage or OverlayImages
 import javalib.funworld.*;      // the abstract World class and the big-bang library
 import java.awt.Color;          // general colors (as triples of red,green,blue values)
+                                // and predefined colors (Red, Green, Yellow, Blue, Black, White)
 
-import static javalib.worldimages.TextImage.c;
-// and predefined colors (Red, Green, Yellow, Blue, Black, White)
 
 interface IMobile {
 
@@ -226,11 +225,14 @@ class Complex implements IMobile {
             Color.BLACK).movePinhole(0 - this.length, 0 - rightMiddle);
 
     return new OverlayImage(
-            new RotateImage(new OverlayImage(new RotateImage(leftStem, 270),
-                    this.left.drawMobileHelp(this.leftside, this.length)).movePinhole(this.leftside, this.length),
+            new RotateImage(new OverlayImage(
+                    new RotateImage(leftStem, 270),
+                    this.left.drawMobileHelp(this.leftside, this.length)).movePinhole(
+                            this.leftside, this.length),
                     90),
             new RotateImage(new OverlayImage(new RotateImage(rightStem, 270),
-                    this.right.drawMobileHelp(this.rightside, this.length)).movePinhole(this.rightside, this.length),
+                    this.right.drawMobileHelp(this.rightside, this.length)).movePinhole(
+                            this.rightside, this.length),
                     90));
   }
 
