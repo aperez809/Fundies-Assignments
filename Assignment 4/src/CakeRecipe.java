@@ -4,6 +4,7 @@ class CakeRecipe {
   double eggs;
   double butter;
   double milk;
+  boolean areVolume;
 
   CakeRecipe(double flour, double sugar, double eggs, double butter, double milk) {
     if (flour == sugar) {
@@ -45,6 +46,11 @@ class CakeRecipe {
     }
   }
 
+  CakeRecipe(int flour, int eggs, int milk, boolean areVolume) {
+    this(flour, eggs, milk);
+    this.areVolume = areVolume;
+  }
+
   Exception invalidArgs(double arg1, double arg2) {
     throw new IllegalArgumentException("Unequal "
             + arg1
@@ -69,5 +75,5 @@ class CakeRecipe {
             + Double.toString(arg2)
             + " != "
             + Double.toString(arg3));
-
+  }
 }

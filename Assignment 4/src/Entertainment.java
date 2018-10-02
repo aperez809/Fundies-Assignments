@@ -13,8 +13,14 @@ interface IEntertainment {
 
   //is this IEntertainment the same as that one?
   boolean sameEntertainment(IEntertainment that);
+
+  //is this mag the same as that mag?
   boolean sameMag(Magazine that);
+
+  //is this tv the same as that tv?
   boolean sameTV(TVSeries that);
+
+  //is this podcast the same as that podcast?
   boolean samePodcast(Podcast that);
 }
 
@@ -34,7 +40,7 @@ abstract class AEntertainment implements IEntertainment {
   }
 
   public int duration() {
-    return 50;
+    return 50 * installments;
   }
 
   public String format() {
@@ -62,12 +68,10 @@ class Magazine extends AEntertainment {
             && this.installments == that.installments;
   }
 
-  @Override
   public boolean sameTV(TVSeries that) {
     return false;
   }
 
-  @Override
   public boolean samePodcast(Podcast that) {
     return false;
   }
@@ -80,7 +84,7 @@ class Magazine extends AEntertainment {
 
   //computes the minutes of entertainment of this Magazine, (includes all installments)
   public int duration() {
-    return this.pages * 5;
+    return (this.pages * 5) * this.installments;
   }
 
   //is this Magazine the same as that IEntertainment?
@@ -155,8 +159,8 @@ class ExamplesEntertainment {
 
   //testing total price method
   boolean testTotalPrice(Tester t) {
-    return t.checkInexact(this.rollingStone.totalPrice(), 2.55*12, .0001)
-            && t.checkInexact(this.houseOfCards.totalPrice(), 5.25*13, .0001)
+    return t.checkInexact(this.rollingStone.totalPrice(), 2.55 * 12, .0001)
+            && t.checkInexact(this.houseOfCards.totalPrice(), 5.25 * 13, .0001)
             && t.checkInexact(this.serial.totalPrice(), 0.0, .0001);
   }
 
