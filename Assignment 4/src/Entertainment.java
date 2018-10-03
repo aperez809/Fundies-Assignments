@@ -54,12 +54,33 @@ class Magazine extends AEntertainment {
   String genre;
   int pages;
 
-  Magazine(String name, double price, int installments, String genre, int pages) {
+  Magazine(String name, double price, String genre, int pages, int installments) {
     super(name, price, installments);
     this.genre = genre;
     this.pages = pages;
   }
 
+  /*Template
+
+  Fields:
+  this.name: String
+  this.price: double
+  this.installments: int
+  this.genre: String
+  this.pages: int
+
+  Methods:
+  this.totalPrice: double
+  this.duration: int
+  this.format: String
+  this.sameEntertainment: boolean
+  this.sameMag: boolean
+  this.sameTV: boolean
+  this.samePodcast: boolean
+
+   */
+
+  //is this magazine the same as that magazine?
   public boolean sameMag(Magazine that) {
     return this.name.equals(that.name)
             && this.price == that.price
@@ -68,18 +89,14 @@ class Magazine extends AEntertainment {
             && this.installments == that.installments;
   }
 
+  //is this magazine the same as that TV series?
   public boolean sameTV(TVSeries that) {
     return false;
   }
 
+  //is this magazine the same as that Podcast?
   public boolean samePodcast(Podcast that) {
     return false;
-  }
-
-  Magazine(String name, double price, String genre, int pages, int installments) {
-    super(name, price, installments);
-    this.genre = genre;
-    this.pages = pages;
   }
 
   //computes the minutes of entertainment of this Magazine, (includes all installments)
@@ -101,12 +118,33 @@ class TVSeries extends AEntertainment {
     this.corporation = corporation;
   }
 
-  @Override
+
+  /*Template
+
+  Fields:
+  this.name: String
+  this.price: double
+  this.installments: int
+  this.genre: String
+  this.pages: int
+
+  Methods:
+  this.totalPrice: double
+  this.duration: int
+  this.format: String
+  this.sameEntertainment: boolean
+  this.sameMag: boolean
+  this.sameTV: boolean
+  this.samePodcast: boolean
+
+   */
+
+  //is this TV series the same as that magazine?
   public boolean sameMag(Magazine that) {
     return false;
   }
 
-  @Override
+  //is this TV series the same as that TV series?
   public boolean sameTV(TVSeries that) {
     return this.name.equals(that.name)
             && this.price == that.price
@@ -114,7 +152,7 @@ class TVSeries extends AEntertainment {
             && this.corporation.equals(that.corporation);
   }
 
-  @Override
+  //is this TV series the same as that podcast?
   public boolean samePodcast(Podcast that) {
     return false;
   }
@@ -131,15 +169,37 @@ class Podcast extends AEntertainment {
     super(name, price, installments);
   }
 
+  /*Template
+
+  Fields:
+  this.name: String
+  this.price: double
+  this.installments: int
+  this.genre: String
+  this.pages: int
+
+  Methods:
+  this.totalPrice: double
+  this.duration: int
+  this.format: String
+  this.sameEntertainment: boolean
+  this.sameMag: boolean
+  this.sameTV: boolean
+  this.samePodcast: boolean
+
+   */
+
+  //is this Podcast the same as that magazine?
   public boolean sameMag(Magazine that) {
     return false;
   }
 
+  //is this podcast the same as that TV series?
   public boolean sameTV(TVSeries that) {
     return false;
   }
 
-  @Override
+  //is this podcast the same as that podcast?
   public boolean samePodcast(Podcast that) {
     return this.name.equals(that.name)
             && this.price == that.price
@@ -152,32 +212,50 @@ class Podcast extends AEntertainment {
   }
 }
 
+
 class ExamplesEntertainment {
   IEntertainment rollingStone = new Magazine("Rolling Stone", 2.55, "Music", 60, 12);
+  IEntertainment vogue = new Magazine("Vogue", 9, "Fashion", 40, 15);
   IEntertainment houseOfCards = new TVSeries("House of Cards", 5.25, 13, "Netflix");
+  IEntertainment theOffice = new TVSeries("The Office", 0.0, 5, "Netflix");
   IEntertainment serial = new Podcast("Serial", 0.0, 8);
+  IEntertainment npr = new Podcast("National public radio", 0.0, 6);
 
   //testing total price method
   boolean testTotalPrice(Tester t) {
     return t.checkInexact(this.rollingStone.totalPrice(), 2.55 * 12, .0001)
             && t.checkInexact(this.houseOfCards.totalPrice(), 5.25 * 13, .0001)
-            && t.checkInexact(this.serial.totalPrice(), 0.0, .0001);
+            && t.checkInexact(this.serial.totalPrice(), 0.0, .0001)
+            && t.checkInexact(this.vogue.totalPrice(), 135.0, .0001)
+            && t.checkInexact(this.theOffice.totalPrice(), 0.0, .0001)
+            && t.checkInexact(this.npr.totalPrice(), 0.0, 0.0001);
   }
 
   boolean testDuration(Tester t) {
-    return t.checkExpect(this.rollingStone.duration(), 300)
-            && t.checkExpect(this.houseOfCards.duration(), 50)
-            && t.checkExpect(this.serial.duration(), 50);
+    return t.checkExpect(this.rollingStone.duration(), 3600)
+            && t.checkExpect(this.houseOfCards.duration(), 650)
+            && t.checkExpect(this.serial.duration(), 400)
+            && t.checkExpect(this.vogue.duration(), 3000)
+            && t.checkExpect(this.theOffice.duration(), 250)
+            && t.checkExpect(this.npr.duration(), 300);
   }
 
   boolean testFormat(Tester t) {
     return t.checkExpect(rollingStone.format(), "Rolling Stone, 2.55.")
             && t.checkExpect(houseOfCards.format(), "House of Cards, 5.25.")
-            && t.checkExpect(serial.format(), "Serial, 0.0.");
+            && t.checkExpect(serial.format(), "Serial, 0.0.")
+            && t.checkExpect(vogue.format(), "Vogue, 9.0.")
+            && t.checkExpect(theOffice.format(), "The Office, 0.0.")
+            && t.checkExpect(npr.format(), "National public radio, 0.0.");
   }
 
   boolean testSameEntertainment(Tester t) {
     return t.checkExpect(rollingStone.sameEntertainment(rollingStone), true)
-            && t.checkExpect(houseOfCards.sameEntertainment(serial), false);
+            && t.checkExpect(houseOfCards.sameEntertainment(serial), false)
+            && t.checkExpect(serial.sameEntertainment(npr), false)
+            && t.checkExpect(vogue.sameEntertainment(vogue), true)
+            && t.checkExpect(vogue.sameEntertainment(npr), false)
+            && t.checkExpect(theOffice.sameEntertainment(vogue), false)
+            && t.checkExpect(serial.sameEntertainment(npr), false);
   }
 }
