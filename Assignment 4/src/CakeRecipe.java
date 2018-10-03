@@ -24,6 +24,7 @@ class CakeRecipe {
 
 
    */
+
   CakeRecipe(double flour, double sugar, double eggs, double butter, double milk) {
     this.flour = new Utils().checkEquality(flour, sugar, "Unequal flour and sugar args");
     this.sugar = new Utils().checkEquality(sugar, flour, "Unequal flour and sugar args");
@@ -41,21 +42,23 @@ class CakeRecipe {
     this.milk = new Utils().checkSumEquality(milk, eggs, flour, "Milk + eggs != flour");
   }
 
-  CakeRecipe(int flour, int eggs, int milk, boolean areVolume) {
+  CakeRecipe(double flour, double eggs, double milk, boolean areVolume) {
     this.flour = flour * 4.25;
     this.sugar = flour * 4.25;
     this.eggs = eggs * 1.75;
     this.butter = eggs * 1.75;
-    this.milk = new Utils().checkSumEquality(milk * 8, this.eggs, this.flour, "Milk + eggs != flour");
+    this.milk = new Utils().checkSumEquality(
+            milk * 8, this.eggs, this.flour, "Milk + eggs != flour");
     this.areVolume = areVolume;
   }
 
+  //is this CakeRecipe the same as the other?
   boolean sameRecipe(CakeRecipe other) {
-      return (this.flour - other.flour < 0.0001)
-              && (this.sugar - other.sugar < 0.0001)
-              && (this.eggs - other.eggs < 0.0001)
-              && (this.butter - other.butter < 0.0001)
-              && (this.milk - other.milk < 0.0001);
+    return (this.flour - other.flour < 0.0001)
+            && (this.sugar - other.sugar < 0.0001)
+            && (this.eggs - other.eggs < 0.0001)
+            && (this.butter - other.butter < 0.0001)
+            && (this.milk - other.milk < 0.0001);
   }
 }
 
@@ -92,7 +95,7 @@ class ExamplesRecipes {
   CakeRecipe cake1 = new CakeRecipe(5.0,5.0,3.0,3.0,2.0);
   CakeRecipe cake2 = new CakeRecipe(10.0, 4.0, 6.0);
   CakeRecipe cake3 = new CakeRecipe(20, 12, 8, true);
-  CakeRecipe cake4 = new CakeRecipe(85, 85, 21, 21, 64);
+  CakeRecipe cake4 = new CakeRecipe(85.0, 85.0, 21.0, 21.0, 64.0);
 
 
 
