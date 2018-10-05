@@ -43,13 +43,21 @@ class CakeRecipe {
   }
 
   CakeRecipe(double flour, double eggs, double milk, boolean areVolume) {
-    this.flour = flour * 4.25;
-    this.sugar = flour * 4.25;
-    this.eggs = eggs * 1.75;
-    this.butter = eggs * 1.75;
-    this.milk = new Utils().checkSumEquality(
-            milk * 8, this.eggs, this.flour, "Milk + eggs != flour");
-    this.areVolume = areVolume;
+    if (!areVolume) {
+      this.flour = flour;
+      this.sugar = flour;
+      this.eggs = eggs;
+      this.butter = eggs;
+      this.milk = new Utils().checkSumEquality(milk, eggs, flour, "Milk + eggs != flour");
+    }
+    else {
+      this.flour = flour * 4.25;
+      this.sugar = flour * 4.25;
+      this.eggs = eggs * 1.75;
+      this.butter = eggs * 1.75;
+      this.milk = new Utils().checkSumEquality(
+              milk * 8, this.eggs, this.flour, "Milk + eggs != flour");
+    }
   }
 
   //is this CakeRecipe the same as the other?
@@ -119,4 +127,3 @@ class ExamplesRecipes {
             && t.checkExpect(cake3.sameRecipe(cake4), true);
   }
 }
-
