@@ -15,11 +15,13 @@
       <file leaf-file-name="XML.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/XML.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+            <state relative-caret-position="6120">
+              <caret line="436" column="1" lean-forward="true" selection-start-line="436" selection-start-column="1" selection-end-line="436" selection-end-column="1" />
               <folding>
-                <element signature="e#380#381#0" expanded="true" />
-                <element signature="e#402#403#0" expanded="true" />
+                <element signature="e#655#656#0" expanded="true" />
+                <element signature="e#677#678#0" expanded="true" />
+                <element signature="e#8189#8190#0" expanded="true" />
+                <element signature="e#8211#8212#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -67,6 +69,7 @@
       <find>sameAtt</find>
       <find>sameAttsame</find>
       <find>get</find>
+      <find>sameXML</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -77,9 +80,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/XML.java" />
         <option value="$PROJECT_DIR$/src/fs.java" />
         <option value="$PROJECT_DIR$/src/Fishy.java" />
+        <option value="$PROJECT_DIR$/src/XML.java" />
       </list>
     </option>
   </component>
@@ -296,12 +299,12 @@
       <workItem from="1539010905327" duration="271000" />
       <workItem from="1539011212981" duration="7000" />
       <workItem from="1539123108899" duration="2499000" />
-      <workItem from="1539188114590" duration="6986000" />
+      <workItem from="1539188114590" duration="8117000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10631000" />
+    <option name="totallyTimeSpent" value="11762000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -352,8 +355,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#380#381#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
+            <element signature="e#655#656#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#8189#8190#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -363,27 +368,10 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#380#381#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Downloads/Trolls/HW5/src/SimonSays.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/XML.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#380#381#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
+            <element signature="e#655#656#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#8189#8190#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -401,8 +389,31 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#380#381#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
+            <element signature="e#655#656#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#8189#8190#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/Trolls/HW5/src/SimonSays.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/XML.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#655#656#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#8189#8190#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -443,11 +454,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/XML.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+        <state relative-caret-position="6120">
+          <caret line="436" column="1" lean-forward="true" selection-start-line="436" selection-start-column="1" selection-end-line="436" selection-end-column="1" />
           <folding>
-            <element signature="e#380#381#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
+            <element signature="e#655#656#0" expanded="true" />
+            <element signature="e#677#678#0" expanded="true" />
+            <element signature="e#8189#8190#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
           </folding>
         </state>
       </provider>

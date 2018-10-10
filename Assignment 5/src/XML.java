@@ -2,23 +2,29 @@ import tester.Tester;
 
 interface ILoXMLFrag {
 
+  //is this ILoXMLFrag the same as other ILoXMLFrag
   boolean sameXMLDoc(ILoXMLFrag other);
+
+  //is this ConsLoXMLFrag the same as other ConsLoXMLFrag
   boolean sameConsLoXMLFrag(ConsLoXMLFrag other);
+
+  //is this MtLoXMLFrag the same as other  MtLoXMLFrag
   boolean sameMtLoXMLFrag(MtLoXMLFrag other);
-
-
 }
 
 class MtLoXMLFrag implements ILoXMLFrag {
 
+  //is this ILoXMLFrag the same as other ILoXMLFrag
   public boolean sameXMLDoc(ILoXMLFrag other) {
     return other.sameMtLoXMLFrag(this);
   }
 
+  //is this ConsLoXMLFrag the same as other ConsLoXMLFrag
   public boolean sameConsLoXMLFrag(ConsLoXMLFrag other) {
     return false;
   }
 
+  //is this MtLoXMLFrag the same as other  MtLoXMLFrag
   public boolean sameMtLoXMLFrag(MtLoXMLFrag other) {
     return true;
   }
@@ -64,15 +70,18 @@ class ConsLoXMLFrag implements ILoXMLFrag {
   this.rest.renderAsString()                           ... String
    */
 
+  //is this ILoXMLFrag the same as other ILoXMLFrag
   public boolean sameXMLDoc(ILoXMLFrag other) {
     return other.sameConsLoXMLFrag(this);
   }
 
+  //is this ConsLoXMLFrag the same as other ConsLoXMLFrag
   public boolean sameConsLoXMLFrag(ConsLoXMLFrag other) {
     return this.first.sameXMLFrag(other.first)
             && this.rest.sameXMLDoc(other.rest);
   }
 
+  //is this MtLoXMLFrag the same as other  MtLoXMLFrag
   public boolean sameMtLoXMLFrag(MtLoXMLFrag other) {
     return false;
   }
@@ -80,10 +89,13 @@ class ConsLoXMLFrag implements ILoXMLFrag {
 
 interface IXMLFrag {
 
+  //is this XMLFrag the same as other XMLFrag
   boolean sameXMLFrag(IXMLFrag other);
 
+  //is this Plaintext the same as other Plaintext
   boolean samePlaintext(Plaintext other);
 
+  //is this Tagged the same as other Tagged
   boolean sameTagged(Tagged other);
 }
 
@@ -110,15 +122,17 @@ class Plaintext implements IXMLFrag {
 
    */
 
-
+  //is this Plaintext the same as other Plaintext
   public boolean samePlaintext(Plaintext other) {
     return this.txt.equals(other.txt);
   }
 
+  //is this Tagged the same as other Tagged
   public boolean sameTagged(Tagged other) {
     return false;
   }
 
+  //is this XMLFrag the same as other XMLFrag
   public boolean sameXMLFrag(IXMLFrag other) {
     return other.samePlaintext(this);
   }
@@ -162,15 +176,18 @@ class Tagged implements IXMLFrag {
   this.content.renderAsString()                           ... String
    */
 
+  //is this XMLFrag the same as other XMLFrag
   public boolean sameXMLFrag(IXMLFrag other) {
     return other.sameTagged(this);
   }
 
+  //is this Plaintext the same as other Plaintext
   public boolean samePlaintext(Plaintext other) {
     return false;
   }
 
 
+  //is this Tagged the same as other Tagged
   public boolean sameTagged(Tagged other) {
     return this.tag.sameTag(other.tag)
             && this.content.sameXMLDoc(other.content);
@@ -202,6 +219,7 @@ class Tag {
   this.atts.updateAttribute(String name, String value) ... ILoAtt
    */
 
+  //is this Tag the same as the other Tag
   public boolean sameTag(Tag other) {
     return this.name.equals(other.name)
             && this.atts.sameILoAtt(other.atts);
@@ -211,8 +229,13 @@ class Tag {
 // List of Attributes implementation
 interface ILoAtt {
 
+  //is this ILoAtt the same as the other ILoAtt
   boolean sameILoAtt(ILoAtt other);
+
+  //is this ConsLoAtt the same as the other ConsLoAtt
   boolean sameConsLoAtt(ConsLoAtt other);
+
+  //is this MtLoAtt the same as the other MtLoAtt
   boolean sameMtLoAtt(MtLoAtt other);
 }
 
@@ -242,15 +265,20 @@ class ConsLoAtt implements ILoAtt {
   this.content.updateAttribute(String name, String value) ... ILoAtt
    */
 
+
+  //is this ILoAtt the same as the other ILoAtt
   public boolean sameILoAtt(ILoAtt other) {
     return other.sameConsLoAtt(this);
   }
 
+
+  //is this ConsLoAtt the same as the other ConsLoAtt
   public boolean sameConsLoAtt(ConsLoAtt other) {
     return this.first.sameAttribute(other.first)
             && this.rest.sameILoAtt(other.rest);
   }
 
+  //is this MtLoAtt the same as the other ConsMtLoAttLoAtt
   public boolean sameMtLoAtt(MtLoAtt other) {
     return false;
   }
@@ -258,15 +286,17 @@ class ConsLoAtt implements ILoAtt {
 
 class MtLoAtt implements ILoAtt {
 
+  //is this ILoAtt the same as the other ILoAtt
   public boolean sameILoAtt(ILoAtt other) {
     return other.sameMtLoAtt(this);
   }
 
+  //is this ConsLoAtt the same as the other ConsLoAtt
   public boolean sameConsLoAtt(ConsLoAtt other) {
     return false;
   }
 
-
+  //is this MtLoAtt the same as the other ConsMtLoAttLoAtt
   public boolean sameMtLoAtt(MtLoAtt other) {
     return true;
   }
@@ -295,6 +325,7 @@ class Att {
 
    */
 
+  //is this Attribute the same as the other Attribute
   boolean sameAttribute(Att other) {
     return this.name.equals(other.name)
             && this.value.equals(other.value);
@@ -389,5 +420,18 @@ class ExamplesXML {
     return t.checkExpect(xml5.sameXMLDoc(xml5), true)
             && t.checkExpect(xml2.sameXMLDoc(xml4), false)
             && t.checkExpect(new MtLoXMLFrag().sameXMLDoc(new MtLoXMLFrag()), true);
+  }
+
+  boolean testSameConsLoXMLFrag(Tester t) {
+    return t.checkExpect(new MtLoXMLFrag().sameConsLoXMLFrag((ConsLoXMLFrag) xml4), false)
+            && t.checkExpect(xml3.sameConsLoXMLFrag((ConsLoXMLFrag) xml3), true)
+            && t.checkExpect(xml1.sameConsLoXMLFrag((ConsLoXMLFrag) xml2), false);
+  }
+
+  boolean testSameMtLoXMLFrag(Tester t) {
+    return t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag((MtLoXMLFrag) xml4), false)
+            && t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag((MtLoXMLFrag) new MtLoXMLFrag()),
+            true)
+            && t.checkExpect(xml2.sameMtLoXMLFrag((MtLoXMLFrag) xml2), false);
   }
 }
