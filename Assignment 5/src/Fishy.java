@@ -8,6 +8,7 @@ import javalib.worldimages.*;
 interface ILoBG {
   WorldImage drawFish();
   ILoBG randomMove(int n);
+  boolean collision(AFish that);
 }
 
 class ConsLoBG implements ILoBG {
@@ -28,6 +29,12 @@ class ConsLoBG implements ILoBG {
   public ILoBG randomMove(int n) {
     return new ConsLoBG(this.first.randomMove(n), this.rest.randomMove(n));
   }
+
+  @Override
+  public boolean collision(AFish that) {
+    return (that.collision(this.first) && this.first.radius <= that.radius)
+            || this.rest.collision(that);
+  }
 }
 
 class MtLoBG implements ILoBG {
@@ -39,6 +46,11 @@ class MtLoBG implements ILoBG {
   @Override
   public ILoBG randomMove(int n) {
     return new MtLoBG();
+  }
+
+  @Override
+  public boolean collision(AFish that) {
+    return false;
   }
 }
 
@@ -66,6 +78,8 @@ abstract class AFish implements IFish {
   public abstract AFish randomMove(int n);
 
   public abstract AFish moveFish(String ke);
+
+  public abstract boolean collision(AFish that);
 }
 
 
@@ -96,16 +110,6 @@ class PlayerFish extends AFish {
     } else if (ke.equals("down")) {
       return new PlayerFish(new Posn(this.center.x, this.center.y + 5),
               this.radius, this.col);
-    }
-
-
-    // change the color to Y, G, R
-    else if (ke.equals("Y")) {
-      return new PlayerFish(this.center, this.radius, Color.YELLOW);
-    } else if (ke.equals("G")) {
-      return new PlayerFish(this.center, this.radius, Color.GREEN);
-    } else if (ke.equals("R")) {
-      return new PlayerFish(this.center, this.radius, Color.RED);
     } else {
       return this;
     }
@@ -113,6 +117,12 @@ class PlayerFish extends AFish {
 
   public AFish randomMove(int n) {
     return this;
+  }
+
+  public boolean collision(AFish that) {
+    return this.center.x > that.center.x - this.radius  && this.center.x < that.center.x + this.radius
+            && this.center.y >= that.center.y - this.radius
+            && this.center.y <= that.center.y + this.radius;
   }
 }
 
@@ -144,6 +154,10 @@ class BackgroundFish extends AFish {
   public AFish moveFish(String ke) {
     return this;
   }
+
+  public boolean collision(AFish that) {
+    return false;
+  }
 }
 
 class FishyWorld extends World {
@@ -162,9 +176,21 @@ class FishyWorld extends World {
     return this.getEmptyScene()
             .placeImageXY(this.player.fishImage(), this.player.center.x, this.player.center.y)
             .placeImageXY(this.bg.drawFish(), 500, 500);
-    //return new WorldScene(this.width, this.height)
-    //        .placeImageXY(this.player.fishImage(), this.player.center.x, this.player.center.y);
   }
+
+  public WorldEnd worldEnds() {
+    if (this.bg.collision(this.player)) {
+      return new WorldEnd(true, this.makeScene().placeImageXY(
+              new TextImage("lol u suck", 40, FontStyle.BOLD_ITALIC, Color.red),
+              500, 500));
+    } else {
+      return new WorldEnd(false, this.makeScene());
+    }
+  }
+
+  public WorldScene lastScene(String s) {
+      return super.lastScene(s);
+    }
 
 
   /** Move the Blob when the player presses a key */
@@ -200,7 +226,7 @@ class ExamplesFish {
 
   public static void main(String[] argv) {
 
-    AFish player1 = new PlayerFish(new Posn(150, 100), 20, Color.RED);
+    AFish player1 = new PlayerFish(new Posn(500, 500), 20, Color.RED);
     AFish smallBG1 = new BackgroundFish(new Posn(50, 50), 10, Color.BLUE);
     AFish smallBG2 = new BackgroundFish(new Posn(100, 100), 10, Color.BLUE);
     AFish smallMidBG3 = new BackgroundFish(new Posn(300, 200), 20, Color.PINK);
@@ -219,8 +245,8 @@ class ExamplesFish {
     // run the game
     FishyWorld w = new FishyWorld(player1, new ConsLoBG(smallBG1, new ConsLoBG(
             smallBG2, new ConsLoBG(smallMidBG3, new ConsLoBG(smallMidBG4, new ConsLoBG(
-                    midBG5, new ConsLoBG(midBG6, new ConsLoBG(midLargeBG7, new ConsLoBG(
-                            midLargeBG8, new ConsLoBG(largeBG9, new ConsLoBG(largeBG10,
+            midBG5, new ConsLoBG(midBG6, new ConsLoBG(midLargeBG7, new ConsLoBG(
+            midLargeBG8, new ConsLoBG(largeBG9, new ConsLoBG(largeBG10,
             new MtLoBG())))))))))) {
     });
     w.bigBang(1000, 1000, 0.3);
