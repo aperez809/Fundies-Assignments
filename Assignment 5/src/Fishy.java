@@ -6,8 +6,14 @@ import javalib.funworld.*;
 import javalib.worldimages.*;
 
 interface ILoBG {
+
+  //draw image of the fish
   WorldImage drawFish();
+
+  //randomly move around each fish in the list
   ILoBG randomMove(int n);
+
+  //have any of the fish in the list collided with the player?
   boolean collision(AFish that);
 }
 
@@ -32,7 +38,7 @@ class ConsLoBG implements ILoBG {
 
   @Override
   public boolean collision(AFish that) {
-    return (that.collision(this.first) && this.first.radius <= that.radius)
+    return (that.collision(this.first) && this.first.radius < that.radius)
             || this.rest.collision(that);
   }
 }
@@ -120,9 +126,13 @@ class PlayerFish extends AFish {
   }
 
   public boolean collision(AFish that) {
-    return this.center.x > that.center.x - this.radius  && this.center.x < that.center.x + this.radius
-            && this.center.y >= that.center.y - this.radius
-            && this.center.y <= that.center.y + this.radius;
+    //return this.center.x > that.center.x - this.radius
+            //&& this.center.x < that.center.x + this.radius
+            //&& this.center.y >= that.center.y - this.radius
+            //&& this.center.y <= that.center.y + this.radius;
+    return (this.radius + that.radius) >= Math.sqrt(Math.pow(
+            (double)(this.center.x - that.center.x),2)
+            + Math.pow((double)(this.center.y - that.center.y),2));
   }
 }
 
@@ -189,16 +199,17 @@ class FishyWorld extends World {
   }
 
   public WorldScene lastScene(String s) {
-      return super.lastScene(s);
-    }
+    return super.lastScene(s);
+  }
 
 
   /** Move the Blob when the player presses a key */
   public World onKeyEvent(String ke) {
-    if (ke.equals("x"))
+    if (ke.equals("x")) {
       return this.endOfWorld("Goodbye");
-    else
+    } else {
       return new FishyWorld(this.player.moveFish(ke), this.bg);
+    }
   }
 
   /**
@@ -211,7 +222,8 @@ class FishyWorld extends World {
 
 
 class ExamplesFish {
-/*  AFish player1 = new PlayerFish(new Posn(150, 100), 20, Color.RED);
+  /*
+  AFish player1 = new PlayerFish(new Posn(150, 100), 20, Color.RED);
   AFish smallBG1 = new BackgroundFish(new Posn(50, 50), 10, Color.BLUE);
   AFish smallBG2 = new BackgroundFish(new Posn(100, 100), 10, Color.BLUE);
   AFish smallMidBG3 = new BackgroundFish(new Posn(300, 200), 20, Color.PINK);
@@ -221,7 +233,8 @@ class ExamplesFish {
   AFish midLargeBG7 = new BackgroundFish(new Posn(40, 400), 40, Color.BLACK);
   AFish midLargeBG8 = new BackgroundFish(new Posn(400, 400), 40, Color.BLACK);
   AFish largeBG9 = new BackgroundFish(new Posn(600, 600), 50, Color.RED);
-  AFish largeBG10 = new BackgroundFish(new Posn(100, 600), 50, Color.RED);*/
+  AFish largeBG10 = new BackgroundFish(new Posn(100, 600), 50, Color.RED);
+  */
 
 
   public static void main(String[] argv) {
@@ -250,13 +263,5 @@ class ExamplesFish {
             new MtLoBG())))))))))) {
     });
     w.bigBang(1000, 1000, 0.3);
-
-        /*
-         * Canvas c = new Canvas(200, 300); c.show();
-         * System.out.println(" let's see: \n\n" +
-         * Printer.produceString(w.makeImage())); c.drawImage(new
-         * OverlayImages(new CircleImage(new Posn(50, 50), 20, Color.RED), new
-         * RectangleImage(new Posn(20, 30), 40, 20, Color.BLUE)));
-         */
   }
 }

@@ -77,7 +77,7 @@ class ConsLoXMLFrag implements ILoXMLFrag {
 
   //is this ConsLoXMLFrag the same as other ConsLoXMLFrag
   public boolean sameConsLoXMLFrag(ConsLoXMLFrag other) {
-    return this.first.sameXMLFrag(other.first)
+    return this.first.sameXMLFragDD(other.first)
             && this.rest.sameXMLDoc(other.rest);
   }
 
@@ -91,6 +91,8 @@ interface IXMLFrag {
 
   //is this XMLFrag the same as other XMLFrag
   boolean sameXMLFrag(IXMLFrag other);
+
+  boolean sameXMLFragDD(IXMLFrag other);
 
   //is this Plaintext the same as other Plaintext
   boolean samePlaintext(Plaintext other);
@@ -132,8 +134,19 @@ class Plaintext implements IXMLFrag {
     return false;
   }
 
-  //is this XMLFrag the same as other XMLFrag
+  //is this XMLFrag the same as other XMLFrag (using casting)
   public boolean sameXMLFrag(IXMLFrag other) {
+    if (other instanceof Plaintext) {
+      Plaintext newOther = (Plaintext) other;
+      return newOther.txt.equals(this.txt);
+    }
+    else {
+      return false;
+    }
+  }
+
+  //is this XMLFrag the same as other XMLFrag (using double dispatch)
+  public boolean sameXMLFragDD(IXMLFrag other) {
     return other.samePlaintext(this);
   }
 }
@@ -177,7 +190,7 @@ class Tagged implements IXMLFrag {
    */
 
   //is this XMLFrag the same as other XMLFrag
-  public boolean sameXMLFrag(IXMLFrag other) {
+  public boolean sameXMLFragDD(IXMLFrag other) {
     return other.sameTagged(this);
   }
 
@@ -186,6 +199,17 @@ class Tagged implements IXMLFrag {
     return false;
   }
 
+  //is this XMLFrag the same as other XMLFrag (using casting)
+  public boolean sameXMLFrag(IXMLFrag other) {
+    if (other instanceof Tagged) {
+      Tagged newOther = (Tagged) other;
+      return newOther.tag.sameTag(this.tag)
+              && newOther.content.sameXMLDoc(this.content);
+    }
+    else {
+      return false;
+    }
+  }
 
   //is this Tagged the same as other Tagged
   public boolean sameTagged(Tagged other) {
@@ -429,9 +453,8 @@ class ExamplesXML {
   }
 
   boolean testSameMtLoXMLFrag(Tester t) {
-    return t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag((MtLoXMLFrag) xml4), false)
-            && t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag((MtLoXMLFrag) new MtLoXMLFrag()),
+    return t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag(new MtLoXMLFrag()),
             true)
-            && t.checkExpect(xml2.sameMtLoXMLFrag((MtLoXMLFrag) xml2), false);
+            && t.checkExpect(xml2.sameMtLoXMLFrag(new MtLoXMLFrag()), false);
   }
 }
