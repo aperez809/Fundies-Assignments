@@ -15,6 +15,9 @@ interface ILoBG {
 
   //have any of the fish in the list collided with the player?
   boolean collision(AFish that);
+
+  //if collision, remove a background fish from the screen
+  ILoBG removeEaten(AFish player);
 }
 
 class ConsLoBG implements ILoBG {
@@ -26,37 +29,54 @@ class ConsLoBG implements ILoBG {
     this.rest = rest;
   }
 
+  //draw image of each fish in the list
   public WorldImage drawFish() {
     return new OverlayImage(this.first.fishImage().movePinholeTo(this.first.center),
             this.rest.drawFish());
   }
 
-  @Override
+  //randomly move each fish in the list around the board
   public ILoBG randomMove(int n) {
     return new ConsLoBG(this.first.randomMove(n), this.rest.randomMove(n));
   }
 
-  @Override
-  public boolean collision(AFish that) {
-    return (that.collision(this.first) && this.first.radius < that.radius)
-            || this.rest.collision(that);
+  //has a fish in the list collided with player?
+  public boolean collision(AFish player) {
+    return player.collision(this.first)
+            || this.rest.collision(player);
+  }
+
+  public ILoBG removeEaten(AFish player) {
+    if (player.collision(this.first) && player.radius > this.first.radius) {
+      return this.rest.removeEaten(player);
+    }
+    else {
+      return new ConsLoBG(this.first, this.rest.removeEaten(player));
+    }
   }
 }
 
 class MtLoBG implements ILoBG {
 
+
+  //draw image of the fish
   public WorldImage drawFish() {
     return new EmptyImage();
   }
 
-  @Override
+  //move each fish in the list randomly
   public ILoBG randomMove(int n) {
     return new MtLoBG();
   }
 
-  @Override
+  //have any fish in the list collided with the player?
   public boolean collision(AFish that) {
     return false;
+  }
+
+  //removes any fish eaten by the player from the list
+  public ILoBG removeEaten(AFish player) {
+    return this;
   }
 }
 
@@ -68,6 +88,18 @@ interface IFish {
 
   //draw image of fish
   WorldImage fishImage();
+
+  //randomly move fish around map
+  AFish randomMove(int n);
+
+  //move the fish around with the arrow keys
+  AFish moveFish(String ke);
+
+  //has the fish collided with any other fish?
+  boolean collision(AFish that);
+
+  //grow the fish if it eats another
+  AFish growFish();
 }
 
 abstract class AFish implements IFish {
@@ -81,11 +113,17 @@ abstract class AFish implements IFish {
     this.col = col;
   }
 
+  //randomly move fish around map
   public abstract AFish randomMove(int n);
 
+  //move the fish around with the arrow keys
   public abstract AFish moveFish(String ke);
 
+  //has the fish collided with any other fish?
   public abstract boolean collision(AFish that);
+
+  //grow the fish if it eats another
+  public abstract AFish growFish();
 }
 
 
@@ -96,43 +134,53 @@ class PlayerFish extends AFish {
     super(center, radius, col);
   }
 
+  //draws image of the fish
   public WorldImage fishImage() {
     return new CircleImage(this.radius, "solid", this.col);
   }
 
 
   //move this PlayerFish 5 pixels in the direction given by the ke or change its
-  //color to Green, Red or Yellow
   public PlayerFish moveFish(String ke) {
     if (ke.equals("right")) {
-      return new PlayerFish(new Posn(this.center.x + 5, this.center.y),
+      return new PlayerFish(new Posn(this.center.x + 10, this.center.y),
               this.radius, this.col);
-    } else if (ke.equals("left")) {
-      return new PlayerFish(new Posn(this.center.x - 5, this.center.y),
+    }
+    else if (ke.equals("left")) {
+      return new PlayerFish(new Posn(this.center.x - 10, this.center.y),
               this.radius, this.col);
-    } else if (ke.equals("up")) {
-      return new PlayerFish(new Posn(this.center.x, this.center.y - 5),
+    }
+    else if (ke.equals("up")) {
+      return new PlayerFish(new Posn(this.center.x, this.center.y - 10),
               this.radius, this.col);
-    } else if (ke.equals("down")) {
-      return new PlayerFish(new Posn(this.center.x, this.center.y + 5),
+    }
+    else if (ke.equals("down")) {
+      return new PlayerFish(new Posn(this.center.x, this.center.y + 10),
               this.radius, this.col);
-    } else {
+    }
+    else {
       return this;
     }
   }
 
+  //move fish randomly
   public AFish randomMove(int n) {
     return this;
   }
 
+  //have fish collided? Uses distance formula to determine
   public boolean collision(AFish that) {
-    //return this.center.x > that.center.x - this.radius
-            //&& this.center.x < that.center.x + this.radius
-            //&& this.center.y >= that.center.y - this.radius
-            //&& this.center.y <= that.center.y + this.radius;
     return (this.radius + that.radius) >= Math.sqrt(Math.pow(
             (double)(this.center.x - that.center.x),2)
             + Math.pow((double)(this.center.y - that.center.y),2));
+  }
+
+  //if valid collision, grows the fish to the next size tier
+  public AFish growFish() {
+    return new PlayerFish(
+            new Posn(this.center.x, this.center.y),
+            this.radius + 10,
+            this.col);
   }
 }
 
@@ -143,30 +191,38 @@ class BackgroundFish extends AFish {
     super(center, radius, col);
   }
 
-  /** produce a new blob moved by a random distance < n pixels */
+  //produce a new fish moved by a random distance n pixels away
   public BackgroundFish randomMove(int n) {
     return new BackgroundFish(new Posn(
-            this.center.x + this.randomInt(n),
-            this.center.y),
-            this.radius,
-            this.col);
+              this.center.x + this.randomInt(n),
+              this.center.y + this.randomInt(n)),
+              this.radius,
+              this.col);
   }
 
-  public WorldImage fishImage() {
-    return new CircleImage(this.radius, "outline", this.col);
-  }
-
+  //return a random int between 0 and n
   int randomInt(int n) {
     return -n + (new Random().nextInt(2 * n + 1));
   }
 
-  @Override
+  //draw image of the fish
+  public WorldImage fishImage() {
+    return new CircleImage(this.radius, "outline", this.col);
+  }
+
+  //move fish with the arrow keys
   public AFish moveFish(String ke) {
     return this;
   }
 
+  //has this fish collided with another?
   public boolean collision(AFish that) {
     return false;
+  }
+
+  //grow fish by if valid collision
+  public AFish growFish() {
+    return this;
   }
 }
 
@@ -203,7 +259,7 @@ class FishyWorld extends World {
   }
 
 
-  /** Move the Blob when the player presses a key */
+  /** Move the Playerfish when the player presses a key */
   public World onKeyEvent(String ke) {
     if (ke.equals("x")) {
       return this.endOfWorld("Goodbye");
@@ -213,28 +269,46 @@ class FishyWorld extends World {
   }
 
   /**
-   * On tick move the Blob in a random direction.
+   * On tick move the BG fish in a random direction.
    */
   public World onTick() {
-    return new FishyWorld(this.player, this.bg.randomMove(5));
+    if (this.bg.collision(this.player)) {
+      return new FishyWorld(this.player.growFish(), this.bg.removeEaten(this.player));
+    }
+
+    else {
+      return new FishyWorld(this.player, this.bg.randomMove(10));
+    }
   }
 }
 
 
 class ExamplesFish {
-  /*
+
   AFish player1 = new PlayerFish(new Posn(150, 100), 20, Color.RED);
-  AFish smallBG1 = new BackgroundFish(new Posn(50, 50), 10, Color.BLUE);
+  AFish smallBG1 = new BackgroundFish(new Posn(200, 250), 10, Color.BLUE);
   AFish smallBG2 = new BackgroundFish(new Posn(100, 100), 10, Color.BLUE);
   AFish smallMidBG3 = new BackgroundFish(new Posn(300, 200), 20, Color.PINK);
   AFish smallMidBG4 = new BackgroundFish(new Posn(300, 300), 20, Color.PINK);
   AFish midBG5 = new BackgroundFish(new Posn(400, 300), 30, Color.GREEN);
   AFish midBG6 = new BackgroundFish(new Posn(450, 400), 30, Color.GREEN);
-  AFish midLargeBG7 = new BackgroundFish(new Posn(40, 400), 40, Color.BLACK);
+  AFish midLargeBG7 = new BackgroundFish(new Posn(200, 400), 40, Color.BLACK);
   AFish midLargeBG8 = new BackgroundFish(new Posn(400, 400), 40, Color.BLACK);
   AFish largeBG9 = new BackgroundFish(new Posn(600, 600), 50, Color.RED);
-  AFish largeBG10 = new BackgroundFish(new Posn(100, 600), 50, Color.RED);
-  */
+  AFish largeBG10 = new BackgroundFish(new Posn(300, 600), 50, Color.RED);
+
+  boolean testCollision(Tester t) {
+    return t.checkExpect(player1.collision(largeBG10), false)
+            && t.checkExpect(player1.collision(new BackgroundFish(
+                    new Posn(150,100),40, Color.RED)), true)
+            && t.checkExpect(player1.collision(new BackgroundFish(
+                    new Posn(210,100),40, Color.RED)), true);
+  }
+
+  boolean testGrowFish(Tester t) {
+    return t.checkExpect(player1.growFish(), new PlayerFish(
+            new Posn(150, 100), 30, Color.RED));
+  }
 
 
   public static void main(String[] argv) {

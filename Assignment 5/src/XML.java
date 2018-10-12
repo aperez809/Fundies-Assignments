@@ -47,27 +47,15 @@ class ConsLoXMLFrag implements ILoXMLFrag {
   this.rest  ... ILoXMLFrag
 
   Methods:
-  this.contentLength()                            ... int
-  this.hasTag(String name)                        ... boolean
-  this.hasAttribute(String name)                  ... boolean
-  this.hasAttributeInTag(String name)             ... boolean
-  this.updateAttribute(String name, String value) ... ILoXMLFrag
-  this.renderAsString()                           ... String
+  this.sameXMLDoc(ILoXMLFrag other)           ... boolean
+  this.sameConsLoXMLFrag(ConsLoXMLFrag other) ... boolean
+  this.sameMtLoXMLFrag(MtLoXMLFrag other      ... boolean
 
   Methods of Fields:
-  this.first.contentLength()                            ... int
-  this.first.hasTag(String name)                        ... boolean
-  this.first.hasAttribute(String name)                  ... boolean
-  this.first.hasAttributeInTag(String name)             ... boolean
-  this.first.updateAttribute(String name, String value) ... ILoXMLFrag
-  this.first.renderAsString()                           ... String
+  this.sameXMLDoc(ILoXMLFrag other)           ... boolean
+  this.sameConsLoXMLFrag(ConsLoXMLFrag other) ... boolean
+  this.sameMtLoXMLFrag(MtLoXMLFrag other      ... boolean
 
-  this.rest.contentLength()                            ... int
-  this.rest.hasTag(String name)                        ... boolean
-  this.rest.hasAttribute(String name)                  ... boolean
-  this.rest.hasAttributeInTag(String name)             ... boolean
-  this.rest.updateAttribute(String name, String value) ... ILoXMLFrag
-  this.rest.renderAsString()                           ... String
    */
 
   //is this ILoXMLFrag the same as other ILoXMLFrag
@@ -113,14 +101,9 @@ class Plaintext implements IXMLFrag {
   this.txt ... String
 
   Methods:
-  this.contentLength()                            ... int
-  this.hasTag(String name)                        ... boolean
-  this.hasAttribute(String name)                  ... boolean
-  this.hasAttributeInTag(String name)             ... boolean
-  this.updateAttribute(String name, String value) ... IXMLFrag
-  this.renderAsString()                           ... String
-
-  Methods of Fields:
+  this.samePlaintext(Plaintext other)     ... boolean
+  this.sameTagged(Tagged other)           ... boolean
+  this.sameXMLFrag(IXMLFrag other)        ... boolean
 
    */
 
@@ -166,28 +149,12 @@ class Tagged implements IXMLFrag {
   this.content  ... ILoXMLFrag
 
   Methods:
-  this.contentLength()                            ... int
-  this.hasTag(String name)                        ... boolean
-  this.hasAttribute(String name)                  ... boolean
-  this.hasAttributeInTag(String name)             ... boolean
-  this.updateAttribute(String name, String value) ... IXMLFrag
-  this.renderAsString()                           ... String
+  this.samePlaintext(Plaintext other)     ... boolean
+  this.sameTagged(Tagged other)           ... boolean
+  this.sameXMLFrag(IXMLFrag other)        ... boolean
 
-  Methods of Fields:
-  this.tag.contentLength()                            ... int
-  this.tag.hasTag(String name)                        ... boolean
-  this.tag.hasAttribute(String name)                  ... boolean
-  this.tag.hasAttributeInTag(String name)             ... boolean
-  this.tag.updateAttribute(String name, String value) ... IXMLFrag
-  this.tag.renderAsString()                           ... String
-
-  this.content.contentLength()                            ... int
-  this.content.hasTag(String name)                        ... boolean
-  this.content.hasAttribute(String name)                  ... boolean
-  this.content.hasAttributeInTag(String name)             ... boolean
-  this.content.updateAttribute(String name, String value) ... ILoXMLFrag
-  this.content.renderAsString()                           ... String
    */
+
 
   //is this XMLFrag the same as other XMLFrag
   public boolean sameXMLFragDD(IXMLFrag other) {
@@ -233,14 +200,8 @@ class Tag {
   this.att  ... ILoAtts
 
   Methods:
-  this.hasTag(String name)                        ... boolean
-  this.hasAttribute(String name)                  ... boolean
-  this.hasAttributeInTag(String name)             ... boolean
-  this.updateAttribute(String name, String value) ... Tag
+  this.sameTag(Tag other)     ... boolean
 
-  Methods of Fields:
-  this.atts.hasAttribute(String name)                  ... boolean
-  this.atts.updateAttribute(String name, String value) ... ILoAtt
    */
 
   //is this Tag the same as the other Tag
@@ -278,15 +239,10 @@ class ConsLoAtt implements ILoAtt {
   this.rest  ... ILoAtt
 
   Methods:
-  this.hasAttribute(String name)                  ... boolean
-  this.updateAttribute(String name, String value) ... ILoAtt
+  this.sameILoAtt(ILoAtt other)    ... boolean
+  this.sameConsLoAtt(ILoAtt other) ... boolean
+  this.sameMtLoAtt(ILoAtt other) ... boolean
 
-  Methods of Fields:
-  this.first.hasAttribute(String name)                  ... boolean
-  this.first.updateAttribute(String name, String value) ... Att
-
-  this.content.hasAttribute(String name)                  ... boolean
-  this.content.updateAttribute(String name, String value) ... ILoAtt
    */
 
 
@@ -342,10 +298,7 @@ class Att {
   this.value  ... String
 
   Methods:
-  this.hasAttribute(String name)                  ... boolean
-  this.updateAttribute(String name, String value) ... Att
-
-  Methods of Fields:
+  this.sameAttribute(Att other)    ... boolean
 
    */
 
@@ -456,5 +409,12 @@ class ExamplesXML {
     return t.checkExpect(new MtLoXMLFrag().sameMtLoXMLFrag(new MtLoXMLFrag()),
             true)
             && t.checkExpect(xml2.sameMtLoXMLFrag(new MtLoXMLFrag()), false);
+  }
+
+  boolean testSameXMLFrag(Tester t) {
+    return t.checkExpect(plainText3.samePlaintext((Plaintext) plainText9), false)
+            && t.checkExpect(plainText5.samePlaintext((Plaintext) plainText5), true)
+            && t.checkExpect(tagged3.sameTagged((Tagged) tagged3), true);
+
   }
 }
