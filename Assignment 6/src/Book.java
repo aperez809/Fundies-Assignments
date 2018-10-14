@@ -1,7 +1,5 @@
 import tester.Tester;
 
-import java.time.temporal.Temporal;
-
 class Book {
   String title;
   String author;
@@ -15,27 +13,27 @@ class Book {
 }
 
 interface IComparator<T> {
-  boolean apply(T t);
+  int compare(T t1, T t2);
 }
 
 class BooksByTitle implements IComparator<Book> {
 
-  public boolean apply(Book b) {
-    return (this.title.compareTo(b.title)) < 0;
+  public int compare(Book b1, Book b2) {
+    return b1.title.compareTo(b2.title);
   }
 }
 
 class BooksByAuthor implements IComparator<Book> {
 
-  public boolean apply(Book b) {
-    return (this.author.compareTo(b.author)) < 0;
+  public int compare(Book b1, Book b2) {
+    return b1.author.compareTo(b2.author);
   }
 }
 
 class BooksByPrice implements IComparator<Book> {
 
-  public boolean apply(Book b) {
-    return (this.price < (b.price)) < 0;
+  public int compare(Book b1, Book b2) {
+    return b1.price - b2.price;
   }
 }
 
@@ -46,7 +44,13 @@ abstract class ABST<T> {
     this.order = order;
   }
 
-  public abstract ABST insert(IComparator<T> criteria, T item);
+  //insert an item at the correct spot in the tree
+  abstract ABST<T> insert(T item);
+
+  //returns left most item in the tree
+  abstract T getLeftMost();
+
+  abstract T getLeftMostHelp(T data);
 }
 
 class Leaf<T> extends ABST<T> {
@@ -55,8 +59,16 @@ class Leaf<T> extends ABST<T> {
     super(order);
   }
 
-  public ABST insert(IComparator<T> criteria, T item) {
-    return new Leaf<T>(criteria);
+  public ABST<T> insert(T t) {
+    return new Node<T>(this.order, t, this, this);
+  }
+
+  public T getLeftMost() {
+    throw new RuntimeException("No leftmost item of an empty tree");
+  }
+
+  public T getLeftMostHelp(T accData) {
+    return accData;
   }
 }
 
@@ -65,56 +77,64 @@ class Node<T> extends ABST<T> {
   ABST left;
   ABST right;
 
-  Node(IComparator<T> order, T data, ABST left, ABST right) {
+  Node(IComparator<T> order, T data, ABST<T> left, ABST<T> right) {
     super(order);
     this.data = data;
     this.left = left;
     this.right = right;
   }
 
-  public ABST<T> insert(IComparator<T> criteria, T item) {
-    if (criteria.apply(this.data)) {
-      return new Node<T>(criteria, item, this.left, this.right.insert(criteria, item));
+
+  public ABST<T> insert(T t) {
+    if (this.order.compare(t, this.data) < 0) {
+      return new Node<T>(this.order, this.data, this.left.insert(t), this.right);
+    } else {
+      return new Node<T>(this.order, this.data, this.left, this.right.insert(t));
     }
-    else {
-      return new Node<T>(criteria, this.data, this.left, this.right);
-    }
+  }
+
+  public T getLeftMost() {
+    return (T) this.left.getLeftMostHelp(this.data);
+  }
+
+  public T getLeftMostHelp(T accData) {
+    return (T) this.left.getLeftMostHelp(this.data);
   }
 }
 
-class ExamplesTree {
+  class ExamplesTree {
 
-  Book b1 = new Book("War and Peace", "Leo Tolstoy", 15);
-  Book b2 = new Book("Jurassic Park", "Michael Crichton", 10);
-  Book b3 = new Book("Art of War", "Sun Tzu", 5);
-  Book b4 = new Book("How to Design Programs", "Matthias Felleissen", 99999);
+    Book b1 = new Book("War and Peace", "Leo Tolstoy", 15);
+    Book b2 = new Book("Jurassic Park", "Michael Crichton", 10);
+    Book b3 = new Book("Art of War", "Sun Tzu", 5);
+    Book b4 = new Book("How to Design Programs", "Matthias Felleissen", 99999);
 
-  ABST leafBBT = new Leaf<Book>(new BooksByTitle());
-  ABST tree1 = new Node<Book>(new BooksByTitle(), b2,
-          new Node<Book>(new BooksByTitle(), b4,
-                  new Node<Book>(new BooksByTitle(), b3,
-                          leafBBT,
-                          leafBBT),
-                  leafBBT),
-          new Node<Book>(new BooksByTitle(), b1,
-                  leafBBT,
-                  leafBBT));
-
-  boolean testInsert(Tester t) {
-    return t.checkExpect(tree1.insert(new BooksByTitle(), b1),
-            new Node<Book>(new BooksByTitle(), b2,
-                    new Node<Book>(new BooksByTitle(), b4,
-                            new Node<Book>(new BooksByTitle(), b3,
-                                    leafBBT,
-                                    leafBBT),
+    ABST leafBBT = new Leaf<Book>(new BooksByTitle());
+    ABST tree1 = new Node<Book>(new BooksByTitle(), b2,
+            new Node<Book>(new BooksByTitle(), b4,
+                    new Node<Book>(new BooksByTitle(), b3,
+                            leafBBT,
+                            leafBBT),
                     leafBBT),
             new Node<Book>(new BooksByTitle(), b1,
                     leafBBT,
-                    new Node<Book>(new BooksByTitle(), b1,
-                            leafBBT,
-                            leafBBT))));
+                    leafBBT));
+
+    boolean testInsert(Tester t) {
+      return t.checkExpect(tree1.insert(b1),
+              new Node<Book>(new BooksByTitle(), b2,
+                      new Node<Book>(new BooksByTitle(), b4,
+                              new Node<Book>(new BooksByTitle(), b3,
+                                      leafBBT,
+                                      leafBBT),
+                              leafBBT),
+                      new Node<Book>(new BooksByTitle(), b1,
+                              leafBBT,
+                              new Node<Book>(new BooksByTitle(), b1,
+                                      leafBBT,
+                                      leafBBT))));
+    }
   }
 
-}
 
 
