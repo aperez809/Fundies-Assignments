@@ -15,7 +15,7 @@
       <file leaf-file-name="Entertainment.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Entertainment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="3060">
               <caret line="232" column="0" lean-forward="false" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
               <folding>
                 <element signature="e#3936#3937#0" expanded="true" />
@@ -28,8 +28,8 @@
       <file leaf-file-name="CakeRecipe.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CakeRecipe.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1065">
-              <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+            <state relative-caret-position="670">
+              <caret line="71" column="2" lean-forward="false" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -72,7 +72,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="732" />
@@ -92,8 +92,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -116,8 +114,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -268,14 +268,15 @@
       <workItem from="1538152610556" duration="9118000" />
       <workItem from="1538581141685" duration="13126000" />
       <workItem from="1538752051918" duration="77000" />
+      <workItem from="1539795294263" duration="7000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22321000" />
+    <option name="totallyTimeSpent" value="22328000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="732" extended-state="6" />
+    <frame x="0" y="0" width="1280" height="800" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -320,6 +321,25 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Entertainment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3060">
+          <caret line="232" column="0" lean-forward="false" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+          <folding>
+            <element signature="e#3936#3937#0" expanded="true" />
+            <element signature="e#3978#3979#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CakeRecipe.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1065">
+          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Entertainment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -389,7 +409,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Entertainment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="3060">
           <caret line="232" column="0" lean-forward="false" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
           <folding>
             <element signature="e#3936#3937#0" expanded="true" />
@@ -405,8 +425,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CakeRecipe.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1065">
-          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+        <state relative-caret-position="670">
+          <caret line="71" column="2" lean-forward="false" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
           <folding />
         </state>
       </provider>
