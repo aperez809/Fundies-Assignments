@@ -282,7 +282,6 @@ class MtList<T> implements IList<T> {
     return new ConsList<T>(first, this);
   }
 
-  @Override
   public boolean compareLists(IList<T> that) {
     return true;
   }
