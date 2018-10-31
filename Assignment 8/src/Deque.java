@@ -4,6 +4,19 @@ interface IPred<T> {
   boolean apply(T t);
 }
 
+class NodeCompare implements IPred<String> {
+
+  String data;
+
+  NodeCompare(String data) {
+    this.data = data;
+  }
+
+
+  public boolean apply(String other) {
+    return this.data.equals(other);
+  }
+}
 
 class Deque<T> {
   Sentinel<T> header;
@@ -29,11 +42,19 @@ class Deque<T> {
   }
 
   T removeFromHead() {
-    return this.header.next.removeFromHead();
+    return this.header.next.removeAbstract();
   }
 
   T removeFromTail() {
-    return this.header.prev.removeFromTail();
+    return this.header.prev.removeAbstract();
+  }
+
+  ANode<T> find(IPred<T> pred) {
+    return this.header.next.find(pred);
+  }
+
+  public void removeNode(Node<T> that) {
+    this.header.next.removeNode(that);
   }
 }
 
@@ -59,13 +80,11 @@ abstract class ANode<T> {
 
   public abstract void addAtTail(T item);
 
-  public abstract T removeFromHead();
+  public abstract T removeAbstract();
 
-  public abstract T removeFromTail();
+  public abstract ANode<T> find(IPred<T> pred);
 
-  public abstract ANode<T> getNextANode(ANode<T> acc);
-
-  public abstract ANode<T> getPrevANode(ANode<T> acc);
+  public abstract void removeNode(Node<T> that);
 }
 
 class Node<T> extends ANode<T> {
@@ -102,7 +121,7 @@ class Node<T> extends ANode<T> {
   public void addAtTail(T item) {
   }
 
-  public T removeFromHead() {
+  public T removeAbstract() {
     T data = this.data;
     this.next.prev = this.prev;
     this.prev.next = this.next;
@@ -110,21 +129,22 @@ class Node<T> extends ANode<T> {
   }
 
 
-  public T removeFromTail() {
-    T data = this.data;
-    this.next.prev = this.prev;
-    this.prev.next = this.next;
-    return data;
+  public ANode<T> find(IPred<T> pred) {
+    if (pred.apply(this.data)) {
+      return this;
+    }
+    else {
+      return this.next.find(pred);
+    }
   }
 
-  public ANode<T> getNextANode(ANode<T> acc) {
-    this.prev = acc.prev;
-    return this;
-  }
-
-  public ANode<T> getPrevANode(ANode<T> acc) {
-    this.next = acc.next;
-    return this;
+  public void removeNode(Node<T> that) {
+    if (pred.apply(that.data)) {
+      this.removeAbstract();
+    }
+    else {
+      this.next.removeNode(pred, that);
+    }
   }
 }
 
@@ -154,21 +174,16 @@ class Sentinel<T> extends ANode<T> {
     this.prev = new Node<T>(item, this.prev, this);
   }
 
-  public T removeFromHead() {
+  public T removeAbstract() {
     throw new RuntimeException("Cannot remove item from empty list");
   }
 
-  public T removeFromTail() {
-    throw new RuntimeException("Cannot remove item from empty list");
-
+  public ANode<T> find(IPred<T> pred) {
+    return this;
   }
 
-  public ANode<T> getPrevANode(ANode<T> acc) {
-    throw new RuntimeException("Cannot get prev of empty list");
-  }
-
-  public ANode<T> getNextANode(ANode<T> acc) {
-    throw new RuntimeException("Cannot get next of empty list");
+  public void removeNode(Node<T> that) {
+    return;
   }
 }
 
@@ -217,6 +232,7 @@ class ExamplesDeque {
 
   //TODO: ^^^
   void testAddAtTail(Tester t) {
+    initDeque();
   }
 
   boolean testRemoveFromHead(Tester t) {
@@ -233,6 +249,26 @@ class ExamplesDeque {
             deque1,
             "removeFromTail")
             && t.checkExpect(deque2.removeFromTail(), "def");
+  }
+
+  boolean testFind(Tester t) {
+    initDeque();
+    return t.checkExpect(deque1.find(new NodeCompare("bcd")),
+            new Sentinel<String>())
+            && t.checkExpect(deque2.find(new NodeCompare("bcd")),
+            bcd)
+            && t.checkExpect(deque2.find(new NodeCompare("sgdsgs")),
+            sent1);
+  }
+
+  void testRemoveNode(Tester t) {
+    initDeque();
+    t.checkExpect(deque1.header.next, new Sentinel<String>());
+    deque1.removeNode(new NodeCompare(abc.data), abc);
+    t.checkExpect(deque1.header.next, new Sentinel<String>());
+    t.checkExpect(deque2.header.next, abc);
+    deque2.removeNode(new NodeCompare(abc.data), abc);
+    t.checkExpect(deque2.header.next, bcd);
   }
 
 
