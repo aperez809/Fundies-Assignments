@@ -28,11 +28,11 @@ class Deque<T> {
     this.header.addAtTail(item);
   }
 
-  ANode<T> removeFromHead() {
+  T removeFromHead() {
     return this.header.removeFromHead();
   }
 
-  ANode<T> removeFromTail() {
+  T removeFromTail() {
     return this.header.removeFromTail();
   }
 }
@@ -59,9 +59,9 @@ abstract class ANode<T> {
 
   public abstract void addAtTail(T item);
 
-  public abstract ANode<T> removeFromHead();
+  public abstract T removeFromHead();
 
-  public abstract ANode<T> removeFromTail();
+  public abstract T removeFromTail();
 
   public abstract ANode<T> getNextANode(ANode<T> acc);
 
@@ -102,12 +102,12 @@ class Node<T> extends ANode<T> {
   public void addAtTail(T item) {
   }
 
-  public ANode<T> removeFromHead() {
+  public T removeFromHead() {
     return null;
   }
 
 
-  public ANode<T> removeFromTail() {
+  public T removeFromTail() {
     return null;
   }
 
@@ -148,17 +148,18 @@ class Sentinel<T> extends ANode<T> {
     this.prev = new Node<T>(item, this.prev, this);
   }
 
-  public ANode<T> removeFromHead() {
+  //TODO: Make this return the node data instead of the the whole node
+  public T removeFromHead() {
     ANode<T> head = this.next;
     this.next = this.next.getNextANode(this.next);
-    return head;
+    return head.data;
   }
 
-
-  public ANode<T> removeFromTail() {
+  //TODO: ^^^^^
+  public T removeFromTail() {
     ANode<T> tail = this.prev;
     this.prev = this.prev.getPrevANode(this.prev);
-    return tail;
+    return tail.data;
   }
 
   public ANode<T> getPrevANode(ANode<T> acc) {
@@ -219,14 +220,18 @@ class ExamplesDeque {
 
   boolean testRemoveFromHead(Tester t) {
     initDeque();
-    return t.checkException(new RuntimeException("Cannot get next of empty list"), deque1, "removeFromHead")
-            && t.checkExpect(deque2.removeFromHead(), abc);
+    return t.checkException(new RuntimeException("Cannot get next of empty list"),
+            deque1,
+            "removeFromHead")
+            && t.checkExpect(deque2.removeFromHead(), "abc");
   }
 
   boolean testRemoveFromTail(Tester t) {
     initDeque();
-    return t.checkException(new RuntimeException("Cannot get prev of empty list"), deque1, "removeFromTail")
-            && t.checkExpect(deque2.removeFromTail(), def);
+    return t.checkException(new RuntimeException("Cannot get prev of empty list"),
+            deque1,
+            "removeFromTail")
+            && t.checkExpect(deque2.removeFromTail(), "def");
   }
 
 

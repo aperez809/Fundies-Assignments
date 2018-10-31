@@ -1,15 +1,15 @@
 
 // represents an empty list of Person's buddies
 class MTLoBuddy implements ILoBuddy {
-    MTLoBuddy() {}
+  MTLoBuddy() {}
 
-    public boolean contains(Person that) {
-        return false;
-    }
+  public boolean contains(Person that) {
+    return false;
+  }
 
-    public int countCommonBuddies(ILoBuddy that, int acc) {
-        return that.countCommonBuddiesMT(this, acc);
-    }
+  public int countCommonBuddies(ILoBuddy that, int acc) {
+    return that.countCommonBuddiesMT(this, acc);
+  }
 
   public int countCommonBuddiesCons(ConsLoBuddy that, int acc) {
     return acc;
@@ -20,7 +20,7 @@ class MTLoBuddy implements ILoBuddy {
   }
 
   public boolean hasExtendedBuddy(ILoBuddy acc, Person that) {
-        return false;
+    return false;
   }
 
   public int partyCount(ILoBuddy acc, int currentCount) {

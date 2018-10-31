@@ -2,7 +2,7 @@ import tester.*;
 
 
 // runs tests for the buddies problem
-public class ExamplesBuddies{
+public class ExamplesBuddies {
 
   Person ann;
   Person bob;
@@ -86,12 +86,12 @@ public class ExamplesBuddies{
   boolean testPartyCount(Tester t) {
     initBuddies();
     return t.checkExpect(ann.partyCount(), 8);
-           // && t.checkExpect(jan.partyCount(), 3);
+    // && t.checkExpect(jan.partyCount(), 3);
   }
 
   boolean testMaxLikelihood(Tester t) {
     initBuddies();
-    return t.checkExpect(ann.maxLikelihood(dan), .95*.99*.85*.9*.95*.95);
+    return t.checkExpect(ann.maxLikelihood(dan), .95 * .99 * .85 * .9 * .95 * .95);
   }
 
 
