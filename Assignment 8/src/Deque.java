@@ -29,11 +29,11 @@ class Deque<T> {
   }
 
   T removeFromHead() {
-    return this.header.removeFromHead();
+    return this.header.next.removeFromHead();
   }
 
   T removeFromTail() {
-    return this.header.removeFromTail();
+    return this.header.prev.removeFromTail();
   }
 }
 
@@ -103,12 +103,18 @@ class Node<T> extends ANode<T> {
   }
 
   public T removeFromHead() {
-    return null;
+    T data = this.data;
+    this.next.prev = this.prev;
+    this.prev.next = this.next;
+    return data;
   }
 
 
   public T removeFromTail() {
-    return null;
+    T data = this.data;
+    this.next.prev = this.prev;
+    this.prev.next = this.next;
+    return data;
   }
 
   public ANode<T> getNextANode(ANode<T> acc) {
@@ -148,18 +154,13 @@ class Sentinel<T> extends ANode<T> {
     this.prev = new Node<T>(item, this.prev, this);
   }
 
-  //TODO: Make this return the node data instead of the the whole node
   public T removeFromHead() {
-    ANode<T> head = this.next;
-    this.next = this.next.getNextANode(this.next);
-    return head.data;
+    throw new RuntimeException("Cannot remove item from empty list");
   }
 
-  //TODO: ^^^^^
   public T removeFromTail() {
-    ANode<T> tail = this.prev;
-    this.prev = this.prev.getPrevANode(this.prev);
-    return tail.data;
+    throw new RuntimeException("Cannot remove item from empty list");
+
   }
 
   public ANode<T> getPrevANode(ANode<T> acc) {
@@ -220,7 +221,7 @@ class ExamplesDeque {
 
   boolean testRemoveFromHead(Tester t) {
     initDeque();
-    return t.checkException(new RuntimeException("Cannot get next of empty list"),
+    return t.checkException(new RuntimeException("Cannot remove item from empty list"),
             deque1,
             "removeFromHead")
             && t.checkExpect(deque2.removeFromHead(), "abc");
@@ -228,11 +229,13 @@ class ExamplesDeque {
 
   boolean testRemoveFromTail(Tester t) {
     initDeque();
-    return t.checkException(new RuntimeException("Cannot get prev of empty list"),
+    return t.checkException(new RuntimeException("Cannot remove item from empty list"),
             deque1,
             "removeFromTail")
             && t.checkExpect(deque2.removeFromTail(), "def");
   }
+
+
 
 
 
