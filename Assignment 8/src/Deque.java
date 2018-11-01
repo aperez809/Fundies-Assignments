@@ -147,7 +147,12 @@ class Node<T> extends ANode<T> {
   }
 
   public void removeNodeCons(Node<T> that) {
-    this.removeAbstract();
+    if (this.data.equals(that.data)) {
+      this.removeAbstract();
+    }
+    else {
+      that.next.removeNode(this);
+    }
   }
 
   public void removeNodeSent(Sentinel<T> that) {
@@ -284,8 +289,8 @@ class ExamplesDeque {
     deque1.removeNode(abc);
     t.checkExpect(deque1.header.next, new Sentinel<String>());
     t.checkExpect(deque2.header.next, abc);
-    deque2.removeNode(abc);
-    t.checkExpect(deque2.header.next, bcd);
+    deque2.removeNode(bcd);
+    t.checkExpect(deque2.header.next.next, cde);
   }
 
 
