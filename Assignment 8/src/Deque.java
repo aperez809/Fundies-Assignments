@@ -53,7 +53,7 @@ class Deque<T> {
     return this.header.next.find(pred);
   }
 
-  public void removeNode(Node<T> that) {
+  public void removeNode(ANode<T> that) {
     this.header.next.removeNode(that);
   }
 }
@@ -84,7 +84,11 @@ abstract class ANode<T> {
 
   public abstract ANode<T> find(IPred<T> pred);
 
-  public abstract void removeNode(Node<T> that);
+  public abstract void removeNode(ANode<T> that);
+
+  public abstract void removeNodeCons(Node<T> tNode);
+
+  public abstract void removeNodeSent(Sentinel<T> tSentinel);
 }
 
 class Node<T> extends ANode<T> {
@@ -138,14 +142,19 @@ class Node<T> extends ANode<T> {
     }
   }
 
-  public void removeNode(Node<T> that) {
-    if (pred.apply(that.data)) {
-      this.removeAbstract();
-    }
-    else {
-      this.next.removeNode(pred, that);
-    }
+  public void removeNode(ANode<T> that) {
+    that.removeNodeCons(this);
   }
+
+  public void removeNodeCons(Node<T> that) {
+    this.removeAbstract();
+  }
+
+  public void removeNodeSent(Sentinel<T> that) {
+    return;
+  }
+
+
 }
 
 
@@ -182,7 +191,15 @@ class Sentinel<T> extends ANode<T> {
     return this;
   }
 
-  public void removeNode(Node<T> that) {
+  public void removeNode(ANode<T> that) {
+    that.removeNodeSent(this);
+  }
+
+  public void removeNodeCons(Node<T> that) {
+    return;
+  }
+
+  public void removeNodeSent(Sentinel<T> that) {
     return;
   }
 }
@@ -264,10 +281,10 @@ class ExamplesDeque {
   void testRemoveNode(Tester t) {
     initDeque();
     t.checkExpect(deque1.header.next, new Sentinel<String>());
-    deque1.removeNode(new NodeCompare(abc.data), abc);
+    deque1.removeNode(abc);
     t.checkExpect(deque1.header.next, new Sentinel<String>());
     t.checkExpect(deque2.header.next, abc);
-    deque2.removeNode(new NodeCompare(abc.data), abc);
+    deque2.removeNode(abc);
     t.checkExpect(deque2.header.next, bcd);
   }
 
