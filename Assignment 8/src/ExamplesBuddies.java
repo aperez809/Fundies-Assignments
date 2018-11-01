@@ -91,7 +91,8 @@ public class ExamplesBuddies {
 
   boolean testMaxLikelihood(Tester t) {
     initBuddies();
-    return t.checkExpect(ann.maxLikelihood(dan), .95 * .99 * .85 * .9 * .95 * .95);
+    return t.checkExpect(ann.maxLikelihood(bob), .95 * .99)
+            && t.checkExpect(ann.maxLikelihood(dan), .95 * .99 * .85 * .9 * .95 * .95);
   }
 
 

@@ -1,8 +1,9 @@
-
+//interface used for comparing two items
 interface IComparator<T> {
   int compare(T t1, T t2);
 }
 
+// class for the same person predicate
 class SamePersonPred implements IComparator<Person> {
   public int compare(Person p1, Person p2) {
     return p1.username.compareTo(p2.username);
@@ -58,7 +59,7 @@ class Person {
   boolean hasExtendedBuddy(Person that) {
     return this.hasExtendedBuddyHelp(new ConsLoBuddy(this, new MTLoBuddy()), that);
   }
-
+  // returns true if there is an extended buddy in the list of buddies
   boolean hasExtendedBuddyHelp(ILoBuddy acc, Person that) {
     return this.buddies.contains(that)
             || this.buddies.hasExtendedBuddy(acc, that);
@@ -74,15 +75,13 @@ class Person {
 
   double maxLikelihood(Person that) {
     if (!this.hasExtendedBuddy(that)) {
-      throw new RuntimeException("These hoes ain't loyal");
+      return 0;
+    }
+    else if (this.equals(that)){
+      return this.dictation * that.hearing;
     }
     else {
       return this.dictation * this.buddies.maxLikelihood(that);
     }
-  }
-
-
-  double getScore(Person that) {
-    return this.hearing * this.dictation * that.hearing;
   }
 }
