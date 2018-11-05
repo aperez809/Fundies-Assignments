@@ -30,15 +30,20 @@ class MTLoBuddy implements ILoBuddy {
     return false;
   }
 
-  // returns the number of people who will show up at the party
-  // given by this person, returns the given count since there are none.
-  public int partyCount(ILoBuddy acc, int currentCount) {
-    return currentCount;
+  // returns the list of people who will show up at the party
+  // given by this person
+  public ILoBuddy partyCount(ILoBuddy acc) {
+    return acc;
   }
 
-  //returns the max likely hood that the extended buddy is in the list.
+  //returns the max likely hood that the message will be received correctly.
   // returns 1 since empty list.
-  public double maxLikelihood(Person that) {
+  public double maxLikelihood(ILoBuddy acc, Person that) {
     return 1;
+  }
+
+  //gets length of a list
+  public int length() {
+    return 0;
   }
 }

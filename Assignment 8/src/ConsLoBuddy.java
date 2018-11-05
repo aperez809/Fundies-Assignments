@@ -11,7 +11,7 @@ class ConsLoBuddy implements ILoBuddy {
 
   // true if person is in the list of buddies
   public boolean contains(Person that) {
-    return this.first.equals(that)
+    return new SamePersonPred().compare(this.first, that) == 0
             || this.rest.contains(that);
   }
 
@@ -48,29 +48,36 @@ class ConsLoBuddy implements ILoBuddy {
     }
   }
 
-  // returns the number of people who will show up at the party
+  // returns the list of people who will show up at the party
   // given by this person
-  public int partyCount(ILoBuddy acc, int currentCount) {
+  public ILoBuddy partyCount(ILoBuddy acc) {
     if (!acc.contains(this.first)) {
-      return this.first.partyCountHelp(new ConsLoBuddy(this.first, acc), 1)
-              + this.rest.partyCount(new ConsLoBuddy(this.first, acc), currentCount);
+      return this.rest.partyCount(this.first.partyCountHelp(new ConsLoBuddy(this.first, acc)));
     }
     else {
-      return this.rest.partyCount(acc, currentCount);
+      return this.rest.partyCount(acc);
     }
   }
 
-  public double maxLikelihood(Person that) {
-    if (this.first.equals(that)) {
-      return this.first.hearing * this.first.maxLikelihood(that);
+  //gets the max likelihood that a message will be received correctly
+  public double maxLikelihood(ILoBuddy acc, Person that) {
+    if (new SamePersonPred().compare(this.first, that) == 0) {
+      return that.hearing;
+      //return Math.max(this.first.hearing * this.first.maxLikelihood(that), 0);
       //return this.first.hearing * this.first.maxLikelihood(that);
     }
-    else {
+    else if (!acc.contains(this.first)) {
       return Math.max(this.first.hearing * this.first.maxLikelihood(that),
-              this.rest.maxLikelihood(that));
+              this.rest.maxLikelihood(acc, that));
       //return this.rest.maxLikelihood(that);
     }
+    else {
+      return that.hearing;
+    }
+  }
 
-
+  //gets the length of a list
+  public int length() {
+    return 1 + this.rest.length();
   }
 }

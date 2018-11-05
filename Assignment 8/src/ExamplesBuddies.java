@@ -50,6 +50,7 @@ public class ExamplesBuddies {
     len.addBuddy(kim);
   }
 
+  //test for addBuddy
   void testAddBuddy(Tester t) {
     initBuddies();
     t.checkExpect(ann.buddies,
@@ -64,6 +65,7 @@ public class ExamplesBuddies {
                                     new MTLoBuddy()))));
   }
 
+  //test for hasDirectBuddy
   boolean testHasDirectBuddy(Tester t) {
     initBuddies();
     return t.checkExpect(ann.hasDirectBuddy(bob), true)
@@ -71,27 +73,32 @@ public class ExamplesBuddies {
             && t.checkExpect(len.hasDirectBuddy(hank), false);
   }
 
+  //test for countCommonBuddies
   boolean testCountCommonBuddies(Tester t) {
     initBuddies();
     return t.checkExpect(ann.countCommonBuddies(fay), 0)
             && t.checkExpect(len.countCommonBuddies(kim), 1);
   }
 
+  //test for hasExtendedBuddy
   boolean testHasExtendedBuddy(Tester t) {
     initBuddies();
     return t.checkExpect(ann.hasExtendedBuddy(ed), true)
             && t.checkExpect(jan.hasExtendedBuddy(gabi), false);
   }
 
+  //test for partyCount
   boolean testPartyCount(Tester t) {
     initBuddies();
-    return t.checkExpect(ann.partyCount(), 8);
-    // && t.checkExpect(jan.partyCount(), 3);
+    return t.checkExpect(ann.partyCount(), 8)
+      && t.checkExpect(jan.partyCount(), 3);
   }
 
+  //test for maxLikelihood lol
   boolean testMaxLikelihood(Tester t) {
     initBuddies();
     return t.checkExpect(ann.maxLikelihood(bob), .95 * .99)
+            && t.checkInexact(ann.maxLikelihood(ann), 1.0, 0.0001)
             && t.checkExpect(ann.maxLikelihood(dan), .95 * .99 * .85 * .9 * .95 * .95);
   }
 

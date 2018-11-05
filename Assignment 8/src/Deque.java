@@ -63,7 +63,7 @@ class Deque<T> {
   }
 
   //void remove method for a the node from Node<T>
-  public void removeNode(Node<T> that) {
+  public void removeNode(ANode<T> that) {
     this.header.next.removeNode(that);
   }
 }
@@ -230,6 +230,8 @@ class Sentinel<T> extends ANode<T> {
 
 class ExamplesDeque {
 
+
+  Sentinel<String> sent0;
   Deque<String> deque1;
 
 
@@ -256,7 +258,8 @@ class ExamplesDeque {
 
   void initDeque() {
 
-    deque1 = new Deque<String>();
+    sent0 = new Sentinel<String>();
+    deque1 = new Deque<String>(sent0);
 
     sent1 = new Sentinel<String>();
     abc = new Node<String>("abc", bcd, sent1);
@@ -267,56 +270,83 @@ class ExamplesDeque {
     deque2 = new Deque<String>(sent1);
 
     sent2 = new Sentinel<String>();
-    alex = new Node<String>("alex", sent2, and);
-    and = new Node<String>("and", alex, jules);
-    jules = new Node<String>("jules", and, are);
-    are = new Node<String>("are", jules, dope);
-    dope = new Node<String>("dope", are, sent2);
+    alex = new Node<String>("alex", and, sent2);
+    and = new Node<String>("and", jules, alex);
+    jules = new Node<String>("jules", are, and);
+    are = new Node<String>("are", dope, jules);
+    dope = new Node<String>("dope", sent2, are);
 
     deque3 = new Deque<String>(sent2);
   }
 
+  //test for size method
   boolean testSize(Tester t) {
     initDeque();
     return t.checkExpect(deque1.size(), 0)
-            && t.checkExpect(deque2.size(), 4);
+            && t.checkExpect(deque2.size(), 4)
+            && t.checkExpect(deque3.size(), 5);
   }
 
+  //test for addAtHead method
   void testAddAtHead(Tester t) {
     initDeque();
-    deque2.addAtHead("another");
-    t.checkExpect(deque2.header.next.next.next, new Node<String>("bcd", cde, abc));
-    t.checkExpect(deque2.header.next, new Node<String>("another", abc, sent1));
+    t.checkExpect(deque1.header.next, new Sentinel<String>());
     deque1.addAtHead("boop");
-    t.checkExpect(deque1.header.next, new Node<String>("boop", sent1, sent1));
+    t.checkExpect(deque1.header.next, new Node<String>("boop",
+            sent0,
+            sent0));
+
+    t.checkExpect(deque2.header.next, abc);
+    deque2.addAtHead("another");
+    t.checkExpect(deque2.header.next, new Node<String>("another", abc, sent1));
+
+    t.checkExpect(deque3.header.next, alex);
+    deque3.addAtHead("not");
+    t.checkExpect(deque3.header.next, new Node<String>("not", alex, sent2));
   }
 
+  //test for addAtTail method
   void testAddAtTail(Tester t) {
     initDeque();
+
+    t.checkExpect(deque2.header.prev, def);
     deque2.addAtTail("another");
     t.checkExpect(deque2.header.prev, new Node<String>("another", sent1, def));
-    t.checkExpect(deque2.header.prev.prev.prev,
-            new Node<String>("cde", def, bcd));
+
+    t.checkExpect(deque3.header.prev, dope);
+    deque3.addAtTail("another");
+    t.checkExpect(deque3.header.prev, new Node<String>("another", sent2, dope));
+
+    t.checkExpect(deque1.header.prev, new Sentinel<String>());
     deque1.addAtTail("boop");
     t.checkExpect(deque1.header.prev, new Node<String>("boop", sent1, sent1));
   }
 
+  //test for removeFromHead method
   boolean testRemoveFromHead(Tester t) {
     initDeque();
     return t.checkException(new RuntimeException("Cannot remove item from empty list"),
             deque1,
             "removeFromHead")
-            && t.checkExpect(deque2.removeFromHead(), "abc");
+            && t.checkExpect(deque2.removeFromHead(), "abc")
+            && t.checkExpect(deque2.header.next, bcd)
+            && t.checkExpect(deque3.removeFromHead(), "alex")
+            && t.checkExpect(deque3.header.next, and);
   }
 
+  //test for removeFromTail method
   boolean testRemoveFromTail(Tester t) {
     initDeque();
     return t.checkException(new RuntimeException("Cannot remove item from empty list"),
             deque1,
             "removeFromTail")
-            && t.checkExpect(deque2.removeFromTail(), "def");
+            && t.checkExpect(deque2.removeFromTail(), "def")
+            && t.checkExpect(deque2.header.prev, cde)
+            && t.checkExpect(deque3.removeFromTail(), "dope")
+            && t.checkExpect(deque3.header.prev, are);
   }
 
+  //test for find method
   boolean testFind(Tester t) {
     initDeque();
     return t.checkExpect(deque1.find(new NodeCompare("bcd")),
@@ -324,9 +354,11 @@ class ExamplesDeque {
             && t.checkExpect(deque2.find(new NodeCompare("bcd")),
             bcd)
             && t.checkExpect(deque2.find(new NodeCompare("sgdsgs")),
-            sent1);
+            sent1)
+            && t.checkExpect(deque3.find(new NodeCompare("jules")), jules);
   }
 
+  //test for removeNode method
   void testRemoveNode(Tester t) {
     initDeque();
     t.checkExpect(deque1.header.next, new Sentinel<String>());
@@ -335,13 +367,7 @@ class ExamplesDeque {
     t.checkExpect(deque2.header.next, abc);
     deque2.removeNode(bcd);
     t.checkExpect(deque2.header.next.next, cde);
+    deque3.removeNode(are);
+    t.checkExpect(deque3.header.prev.prev, jules);
   }
-
-
-
-
-
-
-
-
 }

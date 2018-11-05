@@ -41,11 +41,12 @@ class Person {
   // returns the number of people who will show up at the party
   // given by this person
   int partyCount() {
-    return this.partyCountHelp(new ConsLoBuddy(this, new MTLoBuddy()), 1);
+    return this.partyCountHelp(new ConsLoBuddy(this, new MTLoBuddy())).length();
   }
 
-  int partyCountHelp(ILoBuddy acc, int currentCount) {
-    return this.buddies.partyCount(acc, currentCount);
+  //helper for partyCount so we can use accumulator
+  ILoBuddy partyCountHelp(ILoBuddy acc) {
+    return this.buddies.partyCount(acc);
   }
 
   // returns the number of people that are direct buddies
@@ -59,6 +60,7 @@ class Person {
   boolean hasExtendedBuddy(Person that) {
     return this.hasExtendedBuddyHelp(new ConsLoBuddy(this, new MTLoBuddy()), that);
   }
+
   // returns true if there is an extended buddy in the list of buddies
   boolean hasExtendedBuddyHelp(ILoBuddy acc, Person that) {
     return this.buddies.contains(that)
@@ -73,15 +75,17 @@ class Person {
     }
   }
 
+
+  //gets likelihood that a message will be received
   double maxLikelihood(Person that) {
     if (!this.hasExtendedBuddy(that)) {
-      return 0;
+      return 0.0;
     }
-    else if (this.equals(that)){
-      return this.dictation * that.hearing;
+    else if (new SamePersonPred().compare(this, that) == 0) {
+      return 1.0;
     }
     else {
-      return this.dictation * this.buddies.maxLikelihood(that);
+      return this.dictation * this.maxLikelihood(that);
     }
   }
 }

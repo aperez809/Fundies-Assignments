@@ -17,11 +17,15 @@ interface ILoBuddy {
   // counts common buddies in an empty list of buddies
   int countCommonBuddiesMT(MTLoBuddy that, int acc);
 
-  //returns the number of people who will show up at the party
+  //returns the list of people who will show up at the party
   // given by this person
-  int partyCount(ILoBuddy acc, int currentCount);
+  ILoBuddy partyCount(ILoBuddy acc);
 
   // computes the max likely hood that that person has an extended buddy.
   //Returns a double
-  double maxLikelihood(Person that);
+  double maxLikelihood(ILoBuddy acc, Person that);
+
+
+  //get length of a list
+  int length();
 }
