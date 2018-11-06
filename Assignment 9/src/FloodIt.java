@@ -72,15 +72,17 @@ class Cell {
 class FloodItWorld extends World {
 
   // Defines an int constant
-  static final int BOARD_SIZE = 10;
+  static final int BOARD_SIZE = 4;
   static final int CANVAS_SIZE = 400;
 
   // All the cells of the game
   ArrayList<ArrayList<Cell>> board = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
+  int turnsTaken;
 
   public FloodItWorld(ArrayList<ArrayList<Cell>> board) {
     super();
     this.board = board;
+    this.turnsTaken = 0;
   }
 
   //draws the board by looping through the list of lists of cells that represent the board.
@@ -101,7 +103,7 @@ class FloodItWorld extends World {
                   row.getWidth() / 2,
                   0,
                   row);
-        }
+      }
 
       //adds the new row of images to the grid, underneath the previous row
       grid = new OverlayOffsetAlign(AlignModeX.CENTER,
@@ -118,6 +120,41 @@ class FloodItWorld extends World {
     WorldScene w = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
     w.placeImageXY(this.drawBoard(), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
     return w;
+  }
+
+  public void onKeyEvent(String s) {
+    super.onKeyEvent(s);
+    if (s.equals('r')) {
+      this.makeScene();
+    }
+  }
+
+
+  public void onTick() {
+    super.onTick();
+    if (this.turnsTaken >= BOARD_SIZE) {
+      this.endOfWorld("You suck lol");
+    }
+  }
+
+
+  public void onMouseClicked(Posn mouse) {
+    super.onMouseClicked(mouse);
+    this.turnsTaken++;
+    for (ArrayList<Cell> arr: this.board) {
+      for (Cell c: arr) {
+        //if click is inside the given cell
+        if (this.cellDetection(mouse, c)) {
+          //do something
+        }
+      }
+    }
+  }
+
+
+  public boolean cellDetection(Posn click, Cell c) {
+    return Math.hypot(Math.abs(click.x - c.x), Math.abs(click.y - c.x))
+            <= FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE;
   }
 }
 
@@ -151,6 +188,6 @@ class ExamplesWorld {
 
   void testWorld(Tester t) {
     initWorld();
-    w.bigBang(FloodItWorld.CANVAS_SIZE,FloodItWorld.CANVAS_SIZE);
+    w.bigBang(FloodItWorld.CANVAS_SIZE,FloodItWorld.CANVAS_SIZE, 0.05);
   }
 }
