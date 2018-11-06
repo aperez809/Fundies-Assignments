@@ -7,12 +7,16 @@ import tester.Tester;
 
 import java.util.Random;
 
+
+
+
+
 // Represents a single square of the game area
 class Cell {
   // In logical coordinates, with the origin at the top-left corner of the screen
   int x;
   int y;
-  Color color;
+  Color color; //to be determined randomly
   boolean flooded;
   // the four adjacent cells to this one
   Cell left;
@@ -31,6 +35,7 @@ class Cell {
     this.bottom = bottom;
   }
 
+  //Alternative constructor to save typing
   Cell(int x, int y, boolean flooded) {
     this.x = x;
     this.y = y;
@@ -158,6 +163,10 @@ class FloodItWorld extends World {
   }
 }
 
+class ArrayUtils {
+
+}
+
 class ExamplesWorld {
 
   ArrayList<ArrayList<Cell>> arrCell;
@@ -176,14 +185,38 @@ class ExamplesWorld {
                         false));
       }
     }
+
+    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
+      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
+        if (notEdgeCell(i, j)) {
+          arrCell.get(i).get(j).top = arrCell.get(i - 1).get(j);
+          arrCell.get(i).get(j).bottom = arrCell.get(i + 1).get(j);
+          arrCell.get(i).get(j).left = arrCell.get(i).get(j - 1);
+          arrCell.get(i).get(j).right = arrCell.get(i).get(j + 1);
+        }
+      }
+    }
+
+
     w = new FloodItWorld(arrCell);
   }
+
+  boolean notEdgeCell(int i, int j) {
+    return !(i == 0 || i == FloodItWorld.BOARD_SIZE - 1
+            || j == 0 || j == FloodItWorld.BOARD_SIZE - 1);
+  }
+
 
   boolean testDrawBoard(Tester t) {
     initWorld();
     return t.checkExpect(w.drawBoard(),
             new WorldScene(FloodItWorld.CANVAS_SIZE,
             FloodItWorld.CANVAS_SIZE));
+  }
+
+  boolean testNeighbors(Tester t) {
+    initWorld();
+    return t.checkExpect(w.board.get(2).get(2).left, w.board.get(2).get(1));
   }
 
   void testWorld(Tester t) {
