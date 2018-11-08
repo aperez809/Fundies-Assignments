@@ -1,13 +1,9 @@
 import java.util.ArrayList;
-
 import javalib.impworld.*;
 import java.awt.Color;
 import javalib.worldimages.*;
 import tester.Tester;
-
 import java.util.Random;
-
-
 
 
 
@@ -127,17 +123,19 @@ class FloodItWorld extends World {
     return w;
   }
 
-  public void onKeyEvent(String s) {
-    super.onKeyEvent(s);
-    if (s.equals('r')) {
-      this.makeScene();
+
+  //where go?
+  public void onKeyEvent(String ke) {
+    super.onKeyEvent(ke);
+    if (ke.equals("r")) {
+      this.board = new ArrayUtils().makeBoard();
     }
   }
 
 
   public void onTick() {
     super.onTick();
-    if (this.turnsTaken >= BOARD_SIZE) {
+    if (this.turnsTaken == BOARD_SIZE) {
       this.endOfWorld("You suck lol");
     }
   }
@@ -165,6 +163,39 @@ class FloodItWorld extends World {
 
 class ArrayUtils {
 
+  ArrayList<ArrayList<Cell>> makeBoard() {
+    ArrayList<ArrayList<Cell>> arrCell = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
+
+    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
+      arrCell.add(new ArrayList<Cell>(FloodItWorld.BOARD_SIZE));
+
+      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
+        arrCell.get(i).add(
+                new Cell((FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
+                        (FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
+                        false));
+      }
+    }
+    return arrCell;
+  }
+
+  void assignNeighbors(ArrayList<ArrayList<Cell>> board) {
+    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
+      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
+        if (!edgeCell(i, j)) {
+          board.get(i).get(j).top = board.get(i - 1).get(j);
+          board.get(i).get(j).bottom = board.get(i + 1).get(j);
+          board.get(i).get(j).left = board.get(i).get(j - 1);
+          board.get(i).get(j).right = board.get(i).get(j + 1);
+        }
+      }
+    }
+  }
+
+  boolean edgeCell(int i, int j) {
+    return i == 0 || i == FloodItWorld.BOARD_SIZE - 1
+            || j == 0 || j == FloodItWorld.BOARD_SIZE - 1;
+  }
 }
 
 class ExamplesWorld {
@@ -175,36 +206,12 @@ class ExamplesWorld {
 
   //
   void initWorld() {
-    arrCell = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
-    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
-      arrCell.add(new ArrayList<Cell>(FloodItWorld.BOARD_SIZE));
-      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
-        arrCell.get(i).add(
-                new Cell((FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
-                        (FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
-                        false));
-      }
-    }
-
-    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
-      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
-        if (notEdgeCell(i, j)) {
-          arrCell.get(i).get(j).top = arrCell.get(i - 1).get(j);
-          arrCell.get(i).get(j).bottom = arrCell.get(i + 1).get(j);
-          arrCell.get(i).get(j).left = arrCell.get(i).get(j - 1);
-          arrCell.get(i).get(j).right = arrCell.get(i).get(j + 1);
-        }
-      }
-    }
-
+    arrCell = new ArrayUtils().makeBoard();
 
     w = new FloodItWorld(arrCell);
   }
 
-  boolean notEdgeCell(int i, int j) {
-    return !(i == 0 || i == FloodItWorld.BOARD_SIZE - 1
-            || j == 0 || j == FloodItWorld.BOARD_SIZE - 1);
-  }
+
 
 
   boolean testDrawBoard(Tester t) {
@@ -222,5 +229,16 @@ class ExamplesWorld {
   void testWorld(Tester t) {
     initWorld();
     w.bigBang(FloodItWorld.CANVAS_SIZE,FloodItWorld.CANVAS_SIZE, 0.05);
+  }
+
+  public static void main(String[] argv) {
+
+    // run the tests - showing only the failed test results
+    ExamplesWorld ew = new ExamplesWorld();
+    //Tester.runReport(be, false, false);
+
+    // run the game
+    ew.initWorld();
+    ew.w.bigBang(FloodItWorld.CANVAS_SIZE, FloodItWorld.CANVAS_SIZE, 0.05);
   }
 }
