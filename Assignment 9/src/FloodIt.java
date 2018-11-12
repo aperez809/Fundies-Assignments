@@ -45,6 +45,7 @@ class Cell {
 
 
 
+
   //Creates the image of the cell
   WorldImage cellImage() {
     return new RectangleImage(FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
@@ -67,6 +68,23 @@ class Cell {
     int i = rand.nextInt(4);
     return colors.get(i);
   }
+
+  //For use in testing cellColor method which takes a seed to produce a certain color
+  Color cellColor(int seed) {
+    ArrayList<Color> colors = new ArrayList<Color>();
+
+    colors.add(Color.red);
+    colors.add(Color.blue);
+    colors.add(Color.green);
+    colors.add(Color.black);
+    colors.add(Color.yellow);
+
+    Random rand = new Random(seed);
+    int i = rand.nextInt(4);
+    return colors.get(i);
+  }
+
+
 }
 
 
@@ -88,33 +106,7 @@ class FloodItWorld extends World {
 
   //draws the board by looping through the list of lists of cells that represent the board.
   public WorldImage drawBoard() {
-
-    WorldImage grid = new EmptyImage();  //vertical cells stacked on each other, final image
-
-    //for each list contained in "this.board"
-    for (ArrayList<Cell> arr: this.board) {
-      WorldImage row = new EmptyImage();   //horizontal cells being rendered side-to-side
-      //for each cell in current list contained in "this.board"
-      for (Cell c: arr) {
-
-        //mutate row to add another image on its right
-        row = new OverlayOffsetAlign(AlignModeX.CENTER, //AlignModeX.CENTER
-                  AlignModeY.MIDDLE,
-                  c.cellImage(),
-                  row.getWidth() / 2,
-                  0,
-                  row);
-      }
-
-      //adds the new row of images to the grid, underneath the previous row
-      grid = new OverlayOffsetAlign(AlignModeX.CENTER,
-                AlignModeY.MIDDLE,
-                row,
-                0,
-                grid.getHeight() / 2,
-                grid);
-    }
-    return grid;
+    return new ArrayUtils().drawBoard(this.board);
   }
 
   public WorldScene makeScene() {
@@ -128,7 +120,7 @@ class FloodItWorld extends World {
   public void onKeyEvent(String ke) {
     super.onKeyEvent(ke);
     if (ke.equals("r")) {
-      this.board = new ArrayUtils().makeBoard();
+      this.board = new ArrayUtils().makeBoard(BOARD_SIZE);
     }
   }
 
@@ -148,7 +140,7 @@ class FloodItWorld extends World {
       for (Cell c: arr) {
         //if click is inside the given cell
         if (this.cellDetection(mouse, c)) {
-          //do something
+          //do something3
         }
       }
     }
@@ -163,82 +155,170 @@ class FloodItWorld extends World {
 
 class ArrayUtils {
 
-  ArrayList<ArrayList<Cell>> makeBoard() {
-    ArrayList<ArrayList<Cell>> arrCell = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
+  ArrayList<ArrayList<Cell>> makeBoard(int boardSize) {
+    ArrayList<ArrayList<Cell>> arrCell = new ArrayList<ArrayList<Cell>>(boardSize);
 
-    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
-      arrCell.add(new ArrayList<Cell>(FloodItWorld.BOARD_SIZE));
+    for (int i = 0; i < boardSize; i++) {
+      arrCell.add(new ArrayList<Cell>(boardSize));
 
-      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
+      for (int j = 0; j < boardSize; j++) {
         arrCell.get(i).add(
-                new Cell((FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
-                        (FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE) * j,
+                new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                        (FloodItWorld.CANVAS_SIZE / boardSize) * j,
                         false));
       }
     }
     return arrCell;
   }
 
+  WorldImage drawBoard(ArrayList<ArrayList<Cell>> board) {
+    WorldImage grid = new EmptyImage();  //vertical cells stacked on each other, final image
+
+    //for each list contained in "this.board"
+    for (ArrayList<Cell> arr: board) {
+      WorldImage row = new EmptyImage();   //horizontal cells being rendered side-to-side
+      //for each cell in current list contained in "this.board"
+      for (Cell c: arr) {
+
+        //mutate row to add another image on its right
+        row = new OverlayOffsetAlign(AlignModeX.CENTER, //AlignModeX.CENTER
+                AlignModeY.MIDDLE,
+                c.cellImage(),
+                row.getWidth() / 2,
+                0,
+                row);
+      }
+
+      //adds the new row of images to the grid, underneath the previous row
+      grid = new OverlayOffsetAlign(AlignModeX.CENTER,
+              AlignModeY.MIDDLE,
+              row,
+              0,
+              grid.getHeight() / 2,
+              grid);
+    }
+    return grid;
+  }
+
   void assignNeighbors(ArrayList<ArrayList<Cell>> board) {
-    for (int i = 0; i < FloodItWorld.BOARD_SIZE; i++) {
-      for (int j = 0; j < FloodItWorld.BOARD_SIZE; j++) {
-        if (!edgeCell(i, j)) {
-          board.get(i).get(j).top = board.get(i - 1).get(j);
-          board.get(i).get(j).bottom = board.get(i + 1).get(j);
-          board.get(i).get(j).left = board.get(i).get(j - 1);
-          board.get(i).get(j).right = board.get(i).get(j + 1);
-        }
+    for (int i = 0; i < board.size(); i++) {
+      for (int j = 0; j < board.size(); j++) {
+          board.get(i).get(j).top = this.findNeighbor(board, i - 1, j);
+          board.get(i).get(j).bottom = this.findNeighbor(board, i + 1, j);
+          board.get(i).get(j).left = this.findNeighbor(board, i, j - 1);
+          board.get(i).get(j).right = this.findNeighbor(board, i, j + 1);
       }
     }
   }
 
-  boolean edgeCell(int i, int j) {
-    return i == 0 || i == FloodItWorld.BOARD_SIZE - 1
-            || j == 0 || j == FloodItWorld.BOARD_SIZE - 1;
+  Cell findNeighbor(ArrayList<ArrayList<Cell>> arr, int i, int j) {
+    if (i < 0 || i >= arr.size() - 1
+            || j < 0 || j >= arr.size() - 1) {
+      return null;
+    }
+    else {
+      return arr.get(i).get(j);
+    }
+
   }
 }
 
 class ExamplesWorld {
 
-  ArrayList<ArrayList<Cell>> arrCell;
+  ArrayList<ArrayList<Cell>> arrCell1;
+  ArrayList<ArrayList<Cell>> arrCell2;
+  ArrayList<ArrayList<Cell>> arrCell3;
 
-  FloodItWorld w;
+
+  FloodItWorld w1;
+  FloodItWorld w2;
+  FloodItWorld w3;
+
+  Cell c1;
+  Cell c2;
+  Cell c3;
 
   //
   void initWorld() {
-    arrCell = new ArrayUtils().makeBoard();
+    arrCell1 = new ArrayUtils().makeBoard(FloodItWorld.BOARD_SIZE);
+    arrCell2 = new ArrayUtils().makeBoard(2);
+    arrCell3 = new ArrayUtils().makeBoard(16);
 
-    w = new FloodItWorld(arrCell);
+    new ArrayUtils().assignNeighbors(arrCell1);
+    new ArrayUtils().assignNeighbors(arrCell2);
+    new ArrayUtils().assignNeighbors(arrCell3);
+
+    w1 = new FloodItWorld(arrCell1);
+    w2 = new FloodItWorld(arrCell2);
+    w3 = new FloodItWorld(arrCell3);
+
+    c1 = new Cell(100, 100, false);
+    c2 = new Cell(200, 200, false);
+    c3 = new Cell(300, 300, false);
   }
 
-
-
-
-  boolean testDrawBoard(Tester t) {
+  //tests that cellColor works
+  void testCellColor(Tester t) {
     initWorld();
-    return t.checkExpect(w.drawBoard(),
-            new WorldScene(FloodItWorld.CANVAS_SIZE,
-            FloodItWorld.CANVAS_SIZE));
+    c1.color = c1.cellColor(2);
+    t.checkExpect(c1.color, Color.green);
+    c1.color = c1.cellColor(109851);
+    t.checkExpect(c1.color, Color.red);
   }
 
-  boolean testNeighbors(Tester t) {
+  boolean testCellImage(Tester t) {
     initWorld();
-    return t.checkExpect(w.board.get(2).get(2).left, w.board.get(2).get(1));
+    c1.color = c1.cellColor(3);
+    c2.color = c2.cellColor(109851);
+    return t.checkExpect(c1.cellImage(), new RectangleImage(
+            FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+            FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+            "solid",
+            Color.green))
+            && t.checkExpect(c2.cellImage(), new RectangleImage(
+            FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+            FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+            "solid",
+            Color.red));
   }
 
-  void testWorld(Tester t) {
+  //tests that onKey returns a new board
+  boolean testOnKey(Tester t) {
     initWorld();
-    w.bigBang(FloodItWorld.CANVAS_SIZE,FloodItWorld.CANVAS_SIZE, 0.05);
+    FloodItWorld old = w1;
+    w1.onKeyEvent("r");
+    return !t.checkExpect(w1.board, old.board);
   }
 
-  public static void main(String[] argv) {
+  //test that the board is created the same every time based on input
+  //only difference is randomly generated color of cells
+  //x, y, flooded, and neighbors are identical to examples
+  /*boolean testMakeBoard(Tester t) {
+    initWorld();
+    return t.checkExpect(new ArrayUtils().makeBoard(FloodItWorld.BOARD_SIZE), w1.board)
+            && t.checkExpect(new ArrayUtils().makeBoard(2), w2.board)
+            && t.checkExpect(new ArrayUtils().makeBoard(16), w3.board);
 
-    // run the tests - showing only the failed test results
-    ExamplesWorld ew = new ExamplesWorld();
-    //Tester.runReport(be, false, false);
+  }*/
 
-    // run the game
-    ew.initWorld();
-    ew.w.bigBang(FloodItWorld.CANVAS_SIZE, FloodItWorld.CANVAS_SIZE, 0.05);
+  boolean testAssignNeighbors(Tester t) {
+    initWorld();
+    return t.checkExpect(w1.board.get(2).get(2).left, w1.board.get(2).get(1))
+            && t.checkExpect(w1.board.get(0).get(0).left, null);
+  }
+
+  boolean testFindNeighbor(Tester t) {
+    initWorld();
+    return t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, -1, 0), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 0, -1), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 5, 1), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 1, 5), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 2, 0),
+            arrCell1.get(2).get(0));
+  }
+
+  boolean testCellDetection(Tester t) {
+    initWorld();
+    return t.checkExpect(w1.cellDetection(new Posn(100,100), w1.board.get(0).get(0)), false);
   }
 }
