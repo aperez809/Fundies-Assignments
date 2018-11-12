@@ -63,9 +63,11 @@ class Cell {
     colors.add(Color.green);
     colors.add(Color.black);
     colors.add(Color.yellow);
+    colors.add(Color.pink);
+    colors.add(Color.CYAN);
 
     Random rand = new Random();
-    int i = rand.nextInt(4);
+    int i = rand.nextInt(colors.size());
     return colors.get(i);
   }
 
@@ -78,13 +80,24 @@ class Cell {
     colors.add(Color.green);
     colors.add(Color.black);
     colors.add(Color.yellow);
+    colors.add(Color.pink);
+    colors.add(Color.CYAN);
 
     Random rand = new Random(seed);
-    int i = rand.nextInt(4);
+    int i = rand.nextInt(colors.size());
     return colors.get(i);
   }
 
 
+  public void floodNeighbor(Cell neighbor, Color color) {
+    if (neighbor == null || neighbor.flooded) {
+      return;
+    }
+    else {
+      neighbor.color = color;
+      neighbor.flooded = true;
+    }
+  }
 }
 
 
@@ -121,6 +134,7 @@ class FloodItWorld extends World {
     super.onKeyEvent(ke);
     if (ke.equals("r")) {
       this.board = new ArrayUtils().makeBoard(BOARD_SIZE);
+      this.turnsTaken = 0;
     }
   }
 
@@ -136,11 +150,26 @@ class FloodItWorld extends World {
   public void onMouseClicked(Posn mouse) {
     super.onMouseClicked(mouse);
     this.turnsTaken++;
+    System.out.println(mouse);
     for (ArrayList<Cell> arr: this.board) {
       for (Cell c: arr) {
         //if click is inside the given cell
         if (this.cellDetection(mouse, c)) {
-          //do something3
+          this.floodWorld(c);
+        }
+      }
+    }
+  }
+
+  public void floodWorld(Cell clicked) {
+    for (ArrayList<Cell> arr : this.board) {
+      for (Cell c : arr) {
+        if (c.flooded) {
+          c.color = clicked.color;
+          c.floodNeighbor(c.left, c.color);
+          c.floodNeighbor(c.right, c.color);
+          c.floodNeighbor(c.top, c.color);
+          c.floodNeighbor(c.bottom, c.color);
         }
       }
     }
@@ -162,10 +191,17 @@ class ArrayUtils {
       arrCell.add(new ArrayList<Cell>(boardSize));
 
       for (int j = 0; j < boardSize; j++) {
-        arrCell.get(i).add(
-                new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
-                        (FloodItWorld.CANVAS_SIZE / boardSize) * j,
-                        false));
+        if (i == 0 && j == 0) {
+          arrCell.get(i).add(
+                  new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          (FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          true));
+        } else {
+          arrCell.get(i).add(
+                  new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          (FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          false));
+        }
       }
     }
     return arrCell;
@@ -183,19 +219,19 @@ class ArrayUtils {
         //mutate row to add another image on its right
         row = new OverlayOffsetAlign(AlignModeX.CENTER, //AlignModeX.CENTER
                 AlignModeY.MIDDLE,
-                c.cellImage(),
+                row,
                 row.getWidth() / 2,
                 0,
-                row);
+                c.cellImage());
       }
 
       //adds the new row of images to the grid, underneath the previous row
       grid = new OverlayOffsetAlign(AlignModeX.CENTER,
               AlignModeY.MIDDLE,
-              row,
+              grid,
               0,
               grid.getHeight() / 2,
-              grid);
+              row);
     }
     return grid;
   }
@@ -320,5 +356,16 @@ class ExamplesWorld {
   boolean testCellDetection(Tester t) {
     initWorld();
     return t.checkExpect(w1.cellDetection(new Posn(100,100), w1.board.get(0).get(0)), false);
+  }
+
+  public static void main(String[] argv) {
+
+    // run the tests - showing only the failed test results
+    ExamplesWorld w = new ExamplesWorld();
+
+    // run the game
+    w.initWorld();
+    FloodItWorld world = new FloodItWorld(w.arrCell1);
+    world.bigBang(FloodItWorld.CANVAS_SIZE, FloodItWorld.CANVAS_SIZE, 0.3);
   }
 }
