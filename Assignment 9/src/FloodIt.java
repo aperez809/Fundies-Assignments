@@ -18,6 +18,7 @@ class Cell {
   Cell right;
   Cell bottom;
 
+  //Default Constructor
   Cell(int x, int y, boolean flooded, Cell left, Cell top, Cell right, Cell bottom) {
     this.x = x;
     this.y = y;
@@ -29,7 +30,7 @@ class Cell {
     this.bottom = bottom;
   }
 
-  //Alternative constructor to save typing
+  //Alternative constructor to save typing, as neighbors are not assigned initially
   Cell(int x, int y, boolean flooded) {
     this.x = x;
     this.y = y;
@@ -95,6 +96,8 @@ class Cell {
   }
 
 
+  //mutates the given cell to be flooded if it is not null (which would indicate
+  //that it is not in the board) and is the same color as the given color
   public void floodNeighbor(Cell neighbor, Color color) {
     if (neighbor == null) {
       return;
@@ -112,8 +115,9 @@ class FloodItWorld extends World {
   static final int BOARD_SIZE = 7;
   static final int CANVAS_SIZE = 700;
 
-  // All the cells of the game
+  // All the cells of the game, organized as list of lists
   ArrayList<ArrayList<Cell>> board = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
+  //tracks number of turns taken as clicks
   int turnsTaken;
 
   public FloodItWorld(ArrayList<ArrayList<Cell>> board) {
@@ -127,14 +131,15 @@ class FloodItWorld extends World {
     return new ArrayUtils().drawBoard(this.board);
   }
 
+  //mutates world to make the WorldScene, uses constant CANVAS_SIZE
   public WorldScene makeScene() {
     WorldScene w = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
     w.placeImageXY(this.drawBoard(), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
     return w;
   }
 
-
-  //where go?
+  //restarts the game if "r" key is pressed. makes a new board,
+  //draws it, and assigns cell neighbors
   public void onKeyEvent(String ke) {
     super.onKeyEvent(ke);
     if (ke.equals("r")) {
@@ -145,6 +150,7 @@ class FloodItWorld extends World {
   }
 
 
+  //keeps track of turns taken at each tick. If they exceed the given number, the world ends
   public void onTick() {
     super.onTick();
     if (this.turnsTaken == BOARD_SIZE * 10) {
@@ -153,6 +159,9 @@ class FloodItWorld extends World {
   }
 
 
+  //increments turnsTaken on mouse click, and for each cell, checks if the coordinates of mouse
+  //click were within the bounds of a cell
+  //if so, prompts flooding with floodWorld function
   public void onMouseClicked(Posn mouse) {
     super.onMouseClicked(mouse);
     this.turnsTaken++;
@@ -166,6 +175,9 @@ class FloodItWorld extends World {
     }
   }
 
+  //loops through list to find flooded cells. Changes flooded cells to the color of the cell that
+  //was clicked in onMouseClicked method and then calls floodNeighbor on c's neighbors to check if
+  //they should also be flooded
   void floodWorld(Cell clicked) {
     for (ArrayList<Cell> arr : this.board) {
       for (Cell c : arr) {
@@ -181,6 +193,7 @@ class FloodItWorld extends World {
   }
 
 
+  //were the coordinates within the bounds of a given cell?
   public boolean cellDetection(Posn click, Cell c) {
     return click.x >= c.x
             && click.y >= c.y
@@ -191,6 +204,8 @@ class FloodItWorld extends World {
 
 class ArrayUtils {
 
+  //creates board building list of lists of given size. Outer list created at beginning of method,
+  //inner lists created using the i-loop, and elements of inner lists created using j-loop
   ArrayList<ArrayList<Cell>> makeBoard(int boardSize) {
     ArrayList<ArrayList<Cell>> arrCell = new ArrayList<ArrayList<Cell>>(boardSize);
 
@@ -214,6 +229,8 @@ class ArrayUtils {
     return arrCell;
   }
 
+  //draws the board by pasting images together in rows, then stacking them on top of each other
+  //to create the grid
   WorldImage drawBoard(ArrayList<ArrayList<Cell>> board) {
     WorldImage grid = new EmptyImage();  //vertical cells stacked on each other, final image
 
@@ -233,6 +250,9 @@ class ArrayUtils {
     return grid;
   }
 
+  //uses nested loops to access elements of list of lists. Depending on which neighbor is being
+  //assigned, sets neighbor to either next or previous indexed element in same list or
+  //same indexed element in next or previous list
   void assignNeighbors(ArrayList<ArrayList<Cell>> board) {
     for (int i = 0; i < board.size(); i++) {
       for (int j = 0; j < board.size(); j++) {
@@ -244,6 +264,9 @@ class ArrayUtils {
     }
   }
 
+  //confirms given i and j indexes are not outside bounds of board. If so, set neighbor to null as,
+  //as that would indicate an edge cell.
+  //Otherwise, sets neighbor to element at given index of board
   Cell findNeighbor(ArrayList<ArrayList<Cell>> arr, int i, int j) {
     if (i < 0 || i >= arr.size()
             || j < 0 || j >= arr.size()) {
@@ -271,7 +294,7 @@ class ExamplesWorld {
   Cell c2;
   Cell c3;
 
-  //
+  //initializes world state
   void initWorld() {
     arrCell1 = new ArrayUtils().makeBoard(FloodItWorld.BOARD_SIZE);
     arrCell2 = new ArrayUtils().makeBoard(2);
