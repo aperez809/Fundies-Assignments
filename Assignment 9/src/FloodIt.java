@@ -5,6 +5,8 @@ import javalib.worldimages.*;
 import tester.Tester;
 import java.util.Random;
 
+
+
 // Represents a single square of the game area
 class Cell {
   // In logical coordinates, with the origin at the top-left corner of the screen
@@ -132,7 +134,25 @@ class FloodItWorld extends World {
   }
 
   //mutates world to make the WorldScene, uses constant CANVAS_SIZE
+  //if number of clicks exceeds BOARD_SIZE plus 6 (number of colors), you lose
+  //else if all cells are flooded (same color), you win
+  //otherwise, just create the world scene
   public WorldScene makeScene() {
+
+    if (this.turnsTaken >= BOARD_SIZE + 6) {
+      WorldScene lose = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
+      lose.placeImageXY(new TextImage("You Lose.",
+              100, Color.RED), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+      return lose;
+    }
+
+    else if (this.allFlooded()) {
+      WorldScene win = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
+      win.placeImageXY(new TextImage("You Win!",
+              100, Color.GREEN), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+      return win;
+    }
+
     WorldScene w = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
     w.placeImageXY(this.drawBoard(), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
     return w;
@@ -150,12 +170,21 @@ class FloodItWorld extends World {
   }
 
 
-  //keeps track of turns taken at each tick. If they exceed the given number, the world ends
+  //onTick method to keep track of conditions at each tick
   public void onTick() {
     super.onTick();
-    if (this.turnsTaken == BOARD_SIZE * 10) {
-      this.endOfWorld("You suck lol");
+  }
+
+  boolean allFlooded() {
+    boolean all = true;
+    for (ArrayList<Cell> arr: this.board) {
+      for (Cell c: arr) {
+        if (!c.flooded) {
+          return false;
+        }
+      }
     }
+    return all;
   }
 
 
@@ -164,15 +193,15 @@ class FloodItWorld extends World {
   //if so, prompts flooding with floodWorld function
   public void onMouseClicked(Posn mouse) {
     super.onMouseClicked(mouse);
-    this.turnsTaken++;
     for (ArrayList<Cell> arr: this.board) {
       for (Cell c: arr) {
         //if click is inside the given cell
-        if (this.cellDetection(mouse, c)) {
+        if (this.cellDetection(mouse, c) && this.turnsTaken <= BOARD_SIZE) {
           this.floodWorld(c);
         }
       }
     }
+    this.turnsTaken++;
   }
 
   //loops through list to find flooded cells. Changes flooded cells to the color of the cell that
@@ -194,7 +223,7 @@ class FloodItWorld extends World {
 
 
   //were the coordinates within the bounds of a given cell?
-  public boolean cellDetection(Posn click, Cell c) {
+  boolean cellDetection(Posn click, Cell c) {
     return click.x >= c.x
             && click.y >= c.y
             && click.x <= c.x + CANVAS_SIZE / BOARD_SIZE
