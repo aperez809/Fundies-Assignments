@@ -146,7 +146,7 @@ class FloodItWorld extends World {
       return lose;
     }
 
-    else if (this.allFlooded()) {
+    else if (this.allFlooded(this.board)) {
       WorldScene win = new WorldScene(CANVAS_SIZE, CANVAS_SIZE);
       win.placeImageXY(new TextImage("You Win!",
               100, Color.GREEN), CANVAS_SIZE / 2, CANVAS_SIZE / 2);
@@ -175,16 +175,15 @@ class FloodItWorld extends World {
     super.onTick();
   }
 
-  boolean allFlooded() {
-    boolean all = true;
-    for (ArrayList<Cell> arr: this.board) {
+  boolean allFlooded(ArrayList<ArrayList<Cell>> board) {
+    for (ArrayList<Cell> arr: board) {
       for (Cell c: arr) {
         if (!c.flooded) {
           return false;
         }
       }
     }
-    return all;
+    return true;
   }
 
 
@@ -313,6 +312,7 @@ class ExamplesWorld {
   ArrayList<ArrayList<Cell>> arrCell1;
   ArrayList<ArrayList<Cell>> arrCell2;
   ArrayList<ArrayList<Cell>> arrCell3;
+  ArrayList<ArrayList<Cell>> arrCell4;
 
 
   FloodItWorld w1;
@@ -328,6 +328,7 @@ class ExamplesWorld {
     arrCell1 = new ArrayUtils().makeBoard(FloodItWorld.BOARD_SIZE);
     arrCell2 = new ArrayUtils().makeBoard(2);
     arrCell3 = new ArrayUtils().makeBoard(16);
+    arrCell4 = new ArrayUtils().makeBoard(4);
 
     new ArrayUtils().assignNeighbors(arrCell1);
     new ArrayUtils().assignNeighbors(arrCell2);
@@ -337,34 +338,55 @@ class ExamplesWorld {
     w2 = new FloodItWorld(arrCell2);
     w3 = new FloodItWorld(arrCell3);
 
-    c1 = new Cell(100, 100, false);
-    c2 = new Cell(200, 200, false);
-    c3 = new Cell(300, 300, false);
+    c1 = new Cell(
+            100,
+            100,
+            false,
+            null,
+            null,
+            c2,
+            c3);
+    c2 = new Cell(
+            200,
+            200,
+            false,
+            c1,
+            null,
+            null,
+            null);
+    c3 = new Cell(
+            300,
+            300,
+            false,
+            null,
+            c1,
+            null,
+            null);
   }
 
   //tests that cellColor works
   void testCellColor(Tester t) {
     initWorld();
     c1.color = c1.cellColor(2);
-    t.checkExpect(c1.color, Color.green);
-    c1.color = c1.cellColor(109851);
-    t.checkExpect(c1.color, Color.red);
+    t.checkExpect(c1.color, Color.PINK);
+    c1.color = c1.cellColor(3);
+    t.checkExpect(c1.color, Color.PINK);
   }
 
   boolean testCellImage(Tester t) {
     initWorld();
     c1.color = c1.cellColor(3);
-    c2.color = c2.cellColor(109851);
+    c2.color = c2.cellColor(4);
     return t.checkExpect(c1.cellImage(), new RectangleImage(
             FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
             FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
             "solid",
-            Color.green))
+            Color.PINK))
             && t.checkExpect(c2.cellImage(), new RectangleImage(
             FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
             FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
             "solid",
-            Color.red));
+            Color.BLACK));
   }
 
   //tests that onKey returns a new board
@@ -396,19 +418,56 @@ class ExamplesWorld {
     initWorld();
     return t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, -1, 0), null)
             && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 0, -1), null)
-            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 5, 1), null)
-            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 1, 5), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell4, 5, 1), null)
+            && t.checkExpect(new ArrayUtils().findNeighbor(arrCell4, 1, 5), null)
             && t.checkExpect(new ArrayUtils().findNeighbor(arrCell1, 2, 0),
             arrCell1.get(2).get(0));
   }
 
+  //tests for cellDetection method
   boolean testCellDetection(Tester t) {
     initWorld();
     return t.checkExpect(w1.cellDetection(new Posn(100,100), w1.board.get(0).get(0)),
+            true)
+            && t.checkExpect(w1.cellDetection(new Posn(700, 300), w1.board.get(2).get(3)),
             false);
   }
 
-  public static void main(String[] argv) {
+  /*boolean testFloodWorld(Tester t) {
+    initWorld();
+
+  }*/
+
+  //tests floodNeighbor method
+  void testFloodNeighbor(Tester t) {
+    initWorld();
+
+    t.checkExpect(w1.board.get(0).get(1).flooded, false);
+    w1.board.get(0).get(0).floodNeighbor(w1.board.get(0).get(1), w1.board.get(0).get(0).color);
+    t.checkExpect(w1.board.get(0).get(1).flooded, false);
+
+    w2.board.get(0).get(1).color = w2.board.get(0).get(0).color;
+
+    t.checkExpect(w2.board.get(0).get(1).flooded, false);
+    w2.board.get(0).get(0).floodNeighbor(w2.board.get(0).get(1), w2.board.get(0).get(0).color);
+    t.checkExpect(w2.board.get(0).get(1).flooded, true);
+  }
+
+  void testAllFlooded(Tester t) {
+    initWorld();
+
+    t.checkExpect(w1.allFlooded(w1.board), false);
+
+    for (ArrayList<Cell> arr: w1.board) {
+      for (Cell c: arr) {
+        c.color = Color.BLACK;
+        c.flooded = true;
+      }
+    }
+
+    t.checkExpect(w1.allFlooded(w1.board), true);
+  }
+  /*public static void main(String[] argv) {
 
     // run the tests - showing only the failed test results
     ExamplesWorld w = new ExamplesWorld();
@@ -417,5 +476,5 @@ class ExamplesWorld {
     w.initWorld();
     FloodItWorld world = new FloodItWorld(w.arrCell1);
     world.bigBang(FloodItWorld.CANVAS_SIZE, FloodItWorld.CANVAS_SIZE, 0.3);
-  }
+  }*/
 }
