@@ -5,8 +5,6 @@ import javalib.worldimages.*;
 import tester.Tester;
 import java.util.Random;
 
-
-
 // Represents a single square of the game area
 class Cell {
   // In logical coordinates, with the origin at the top-left corner of the screen
@@ -48,10 +46,18 @@ class Cell {
 
   //Creates the image of the cell
   WorldImage cellImage() {
-    return new RectangleImage(FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
-            FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
-            "solid",
-            this.color);
+    return /*new OverlayImage(
+            new TextImage(
+                    Integer.toString(this.x)
+                            + ", "
+                            + Integer.toString(this.y)
+                            + " "
+                            + this.flooded, Color.WHITE),*/
+            new RectangleImage(
+                    FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+                    FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE,
+                    "solid",
+                    this.color);
   }
 
   //Generates random color from the list "colors" to be used by the cell
@@ -90,11 +96,10 @@ class Cell {
 
 
   public void floodNeighbor(Cell neighbor, Color color) {
-    if (neighbor == null || neighbor.flooded) {
+    if (neighbor == null) {
       return;
     }
-    else {
-      neighbor.color = color;
+    else if (neighbor.color == color) {
       neighbor.flooded = true;
     }
   }
@@ -104,8 +109,8 @@ class Cell {
 class FloodItWorld extends World {
 
   // Defines an int constant
-  static final int BOARD_SIZE = 4;
-  static final int CANVAS_SIZE = 400;
+  static final int BOARD_SIZE = 7;
+  static final int CANVAS_SIZE = 700;
 
   // All the cells of the game
   ArrayList<ArrayList<Cell>> board = new ArrayList<ArrayList<Cell>>(FloodItWorld.BOARD_SIZE);
@@ -134,6 +139,7 @@ class FloodItWorld extends World {
     super.onKeyEvent(ke);
     if (ke.equals("r")) {
       this.board = new ArrayUtils().makeBoard(BOARD_SIZE);
+      new ArrayUtils().assignNeighbors(this.board);
       this.turnsTaken = 0;
     }
   }
@@ -141,7 +147,7 @@ class FloodItWorld extends World {
 
   public void onTick() {
     super.onTick();
-    if (this.turnsTaken == BOARD_SIZE) {
+    if (this.turnsTaken == BOARD_SIZE * 10) {
       this.endOfWorld("You suck lol");
     }
   }
@@ -150,7 +156,6 @@ class FloodItWorld extends World {
   public void onMouseClicked(Posn mouse) {
     super.onMouseClicked(mouse);
     this.turnsTaken++;
-    System.out.println(mouse);
     for (ArrayList<Cell> arr: this.board) {
       for (Cell c: arr) {
         //if click is inside the given cell
@@ -161,7 +166,7 @@ class FloodItWorld extends World {
     }
   }
 
-  public void floodWorld(Cell clicked) {
+  void floodWorld(Cell clicked) {
     for (ArrayList<Cell> arr : this.board) {
       for (Cell c : arr) {
         if (c.flooded) {
@@ -177,8 +182,10 @@ class FloodItWorld extends World {
 
 
   public boolean cellDetection(Posn click, Cell c) {
-    return Math.hypot(Math.abs(click.x - c.x), Math.abs(click.y - c.x))
-            <= FloodItWorld.CANVAS_SIZE / FloodItWorld.BOARD_SIZE;
+    return click.x >= c.x
+            && click.y >= c.y
+            && click.x <= c.x + CANVAS_SIZE / BOARD_SIZE
+            && click.y <= c.y + CANVAS_SIZE / BOARD_SIZE;
   }
 }
 
@@ -194,12 +201,12 @@ class ArrayUtils {
         if (i == 0 && j == 0) {
           arrCell.get(i).add(
                   new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
-                          (FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          (FloodItWorld.CANVAS_SIZE / boardSize) * i,
                           true));
         } else {
           arrCell.get(i).add(
                   new Cell((FloodItWorld.CANVAS_SIZE / boardSize) * j,
-                          (FloodItWorld.CANVAS_SIZE / boardSize) * j,
+                          (FloodItWorld.CANVAS_SIZE / boardSize) * i,
                           false));
         }
       }
@@ -217,21 +224,11 @@ class ArrayUtils {
       for (Cell c: arr) {
 
         //mutate row to add another image on its right
-        row = new OverlayOffsetAlign(AlignModeX.CENTER, //AlignModeX.CENTER
-                AlignModeY.MIDDLE,
-                row,
-                row.getWidth() / 2,
-                0,
-                c.cellImage());
+        row = new BesideImage(row, c.cellImage());
       }
 
       //adds the new row of images to the grid, underneath the previous row
-      grid = new OverlayOffsetAlign(AlignModeX.CENTER,
-              AlignModeY.MIDDLE,
-              grid,
-              0,
-              grid.getHeight() / 2,
-              row);
+      grid = new AboveImage(grid, row);
     }
     return grid;
   }
@@ -239,17 +236,17 @@ class ArrayUtils {
   void assignNeighbors(ArrayList<ArrayList<Cell>> board) {
     for (int i = 0; i < board.size(); i++) {
       for (int j = 0; j < board.size(); j++) {
-          board.get(i).get(j).top = this.findNeighbor(board, i - 1, j);
-          board.get(i).get(j).bottom = this.findNeighbor(board, i + 1, j);
-          board.get(i).get(j).left = this.findNeighbor(board, i, j - 1);
-          board.get(i).get(j).right = this.findNeighbor(board, i, j + 1);
+        board.get(i).get(j).top = this.findNeighbor(board, i - 1, j);
+        board.get(i).get(j).bottom = this.findNeighbor(board, i + 1, j);
+        board.get(i).get(j).left = this.findNeighbor(board, i, j - 1);
+        board.get(i).get(j).right = this.findNeighbor(board, i, j + 1);
       }
     }
   }
 
   Cell findNeighbor(ArrayList<ArrayList<Cell>> arr, int i, int j) {
-    if (i < 0 || i >= arr.size() - 1
-            || j < 0 || j >= arr.size() - 1) {
+    if (i < 0 || i >= arr.size()
+            || j < 0 || j >= arr.size()) {
       return null;
     }
     else {
@@ -355,7 +352,8 @@ class ExamplesWorld {
 
   boolean testCellDetection(Tester t) {
     initWorld();
-    return t.checkExpect(w1.cellDetection(new Posn(100,100), w1.board.get(0).get(0)), false);
+    return t.checkExpect(w1.cellDetection(new Posn(100,100), w1.board.get(0).get(0)),
+            false);
   }
 
   public static void main(String[] argv) {
