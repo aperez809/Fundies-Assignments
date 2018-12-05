@@ -11,25 +11,31 @@ class Vertex {
   int x;
   int y;
   ArrayList<Edge> outEdges;
+  Color color;
+  boolean visited;
 
   Vertex(int x, int y) {
     this.x = x;
     this.y = y;
     this.outEdges = new ArrayList<>();
+    this.color = Color.lightGray;
+    this.visited = false;
   }
 
 
   // draws the vertex as a cell
   WorldScene drawVertex(WorldScene scene) {
-    Color c = Color.lightGray;
+    if (this.visited) {
+      this.color = Color.PINK;
+    }
     if (this.x == MazeWorld.CANVAS_SIZE - VERTEX_SIZE
             && this.y == MazeWorld.CANVAS_SIZE - VERTEX_SIZE) {
-      c = Color.RED;
+      this.color = Color.RED;
     } else if (this.x == 0 && this.y == 0) {
-      c = Color.GREEN;
+      this.color = Color.GREEN;
     }
     WorldImage cell = new RectangleImage(VERTEX_SIZE, VERTEX_SIZE,
-            OutlineMode.SOLID, c);
+            OutlineMode.SOLID, this.color);
     scene.placeImageXY(cell, (this.x + (VERTEX_SIZE / 2)),
             (this.y + (VERTEX_SIZE / 2)));
 
@@ -72,14 +78,14 @@ class Edge {
     if (!this.toRemove) {
       // draws right edge
       if (this.from.x < this.to.x) {
-        WorldImage edge = new RectangleImage(1, Vertex.VERTEX_SIZE,
+        WorldImage edge = new RectangleImage(3, Vertex.VERTEX_SIZE,
                 OutlineMode.SOLID, Color.BLACK);
         scene.placeImageXY(edge, (this.from.x + Vertex.VERTEX_SIZE),
                 this.from.y + (Vertex.VERTEX_SIZE / 2));
       }
       // draws the bottom edge
       if (this.from.y < this.to.y) {
-        WorldImage edge = new RectangleImage(Vertex.VERTEX_SIZE, 1,
+        WorldImage edge = new RectangleImage(Vertex.VERTEX_SIZE, 3,
                 OutlineMode.SOLID, Color.BLACK);
         scene.placeImageXY(edge,
                 this.from.x + (Vertex.VERTEX_SIZE / 2),
@@ -96,6 +102,7 @@ class MazeWorld extends World {
 
   ArrayList<Edge> edges;
   ArrayList<ArrayList<Vertex>> vertexList;
+  Vertex current;
 
   public MazeWorld() {
     this.vertexList = new ArrayList<ArrayList<Vertex>>();
@@ -108,6 +115,8 @@ class MazeWorld extends World {
     sortEdges();
     unionFind();
     edgeRemove();
+
+    this.current = this.vertexList.get(0).get(0);
   }
 
   // draws the world
@@ -121,6 +130,52 @@ class MazeWorld extends World {
     return w;
   }
 
+  //onTick method
+  public void onTick() {
+    super.onTick();
+  }
+
+  @Override
+  public void onKeyEvent(String s) {
+    super.onKeyEvent(s);
+    if (s.equals("b")) {
+      this.breadthFirst(this.vertexList.get(0).get(0),
+              this.vertexList.get(BOARD_SIZE - 1).get(BOARD_SIZE - 1));
+    }
+    else if (s.equals("d")) {
+      this.depthFirst(this.vertexList.get(0).get(0),
+              this.vertexList.get(BOARD_SIZE - 1).get(BOARD_SIZE - 1));
+    }
+    else if (s.equals("r")) {
+      MazeWorld newW = new MazeWorld();
+      this.vertexList = newW.vertexList;
+      this.edges = newW.edges;
+    }
+
+    else if (s.equals("left") || s.equals("right") || s.equals("up") || s.equals("down")) {
+      this.moveCurrent(s);
+    }
+  }
+
+  void moveCurrent(String s) {
+    if (s.equals("left") && this.current.x > 0) {
+      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
+              .get(this.current.x / Vertex.VERTEX_SIZE - 1);
+    }
+    else if (s.equals("right") && this.current.x < CANVAS_SIZE) {
+      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
+              .get(this.current.x / Vertex.VERTEX_SIZE + 1);
+    }
+    else if (s.equals("up") && this.current.y > 0) {
+      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE - 1)
+              .get(this.current.x / Vertex.VERTEX_SIZE);
+    }
+    else if (s.equals("down") && this.current.y < CANVAS_SIZE) {
+      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE + 1)
+              .get(this.current.x / Vertex.VERTEX_SIZE);
+    }
+    this.current.visited = true;
+  }
 
   void makeVertices(int boardSize) {
     for (int i = 0; i < boardSize; i++) {
@@ -283,9 +338,9 @@ class MazeWorld extends World {
 
   //is there a path from vertex from to vertex to
   boolean hasPath(Vertex from, Vertex to, ICollection<Vertex> worklist) {
-    ArrayList<Vertex> seen = new ArrayList<Vertex>();
+    ArrayList<Vertex> seen = new ArrayList<>();
 
-    worklist.add(from);
+    worklist.add(from, 0);
 
     while (worklist.size() > 0) {
       Vertex next = worklist.remove();
@@ -293,19 +348,21 @@ class MazeWorld extends World {
       if (next == to) {
         return true;
       }
-      else if (seen.contains(next)) {
+      else if (seen.contains(next)) {}
 
-      }
       else {
-        for (Edge e: next.outEdges) {
-          worklist.add(e.to);
+        for (Edge e : next.outEdges) {
+          if (e.toRemove) {
+            worklist.add(e.to, 0);
+          }
         }
+        seen.add(next);
+        next.color = Color.PINK;
+        this.makeScene();
       }
-      seen.add(next);
     }
     return false;
   }
-
 }
 
 interface ICollection<T> {
@@ -325,7 +382,7 @@ class Queue<T> implements ICollection<T> {
   }
 
   @Override
-  public void add(T item) {
+  public void add(T item, int priority) {
     this.items.addAtTail(item);
   }
 
@@ -348,7 +405,7 @@ class Stack<T> implements ICollection<T> {
   }
 
   @Override
-  public void add(T item) {
+  public void add(T item, int priority) {
     this.items.addAtHead(item);
   }
 
@@ -362,6 +419,29 @@ class Stack<T> implements ICollection<T> {
     return this.items.size();
   }
 
+}
+
+class PriorityQueue<T> implements ICollection<T> {
+  Deque<T> items;
+
+  PriorityQueue(Deque<T> items) {
+    this.items = items;
+  }
+
+  @Override
+  public void add(T item, int priority) {
+    return;
+  }
+
+  @Override
+  public T remove() {
+    return this.items.removeFromTail();
+  }
+
+  @Override
+  public int size() {
+    return this.items.size();
+  }
 }
 
 class ExampleWorld {
@@ -382,7 +462,7 @@ class ExampleWorld {
 
   void testRun(Tester t) {
     initData();
-    m.bigBang(MazeWorld.CANVAS_SIZE, MazeWorld.CANVAS_SIZE);
+    m.bigBang(MazeWorld.CANVAS_SIZE, MazeWorld.CANVAS_SIZE, 2);
   }
 
   // tests buildConnections method
@@ -432,6 +512,15 @@ class ExampleWorld {
     for (int i = 0; i < MazeWorld.BOARD_SIZE; i++) {
       t.checkExpect(m.unionFind().get(i).toRemove, true);
     }
+  }
+
+  //tests that onKey returns a new board
+  boolean testOnKey(Tester t) {
+    initData();
+    MazeWorld old = m;
+    m.onKeyEvent("r");
+    return !t.checkExpect(m.vertexList, old.vertexList)
+            && !t.checkExpect(m.edges, old.edges);
   }
 }
 

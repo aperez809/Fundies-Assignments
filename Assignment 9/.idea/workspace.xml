@@ -14,16 +14,14 @@
     <SUITE FILE_PATH="coverage/Assignment_9$ExamplesWorld.coverage" NAME="ExamplesWorld Coverage Results" MODIFIED="1542134324299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="FloodIt.java" pinned="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="FloodIt.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/FloodIt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-323">
-              <caret line="264" column="22" lean-forward="false" selection-start-line="264" selection-start-column="17" selection-end-line="264" selection-end-column="22" />
+            <state relative-caret-position="109">
+              <caret line="128" column="29" lean-forward="false" selection-start-line="128" selection-start-column="20" selection-end-line="128" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#20163#20164#0" expanded="true" />
-                <element signature="e#20200#20201#0" expanded="true" />
                 <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
                 <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
                 <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -33,12 +31,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mazeGame (1).java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mazeGame (1).java" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Library/Messages/Attachments/a3/03/B1D6CA60-B6DB-4D6E-89B8-257BFDE7ED8A/mazeGame (1).java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="51" column="24" lean-forward="false" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="24" />
+            <state relative-caret-position="389">
+              <caret line="51" column="25" lean-forward="false" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="25" />
               <folding>
+                <element signature="e#3999#4005#0" expanded="true" />
                 <element signature="e#5162#5174#0" expanded="true" />
                 <element signature="e#5276#5282#0" expanded="true" />
               </folding>
@@ -57,7 +56,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>FloodWorld</find>
       <find>floodWorld</find>
       <find>curL</find>
       <find>kruskal</find>
@@ -71,7 +69,6 @@
       <find>Maze</find>
       <find>sortEdges();</find>
       <find>sortEdges()</find>
-      <find>sortEdges</find>
       <find>sortEdges</find>
       <find>kruskalAlgorithm</find>
       <find>edgeRemove</find>
@@ -87,6 +84,8 @@
       <find>a</find>
       <find>Above</find>
       <find>sameN</find>
+      <find>onKey</find>
+      <find>makeScene</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -109,7 +108,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="640" />
     <option name="height" value="725" />
@@ -129,8 +128,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -151,7 +149,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -331,19 +330,19 @@
       <workItem from="1542141047480" duration="3252000" />
       <workItem from="1542222976903" duration="64000" />
       <workItem from="1543257537620" duration="14215000" />
+      <workItem from="1544026573921" duration="1979000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67630000" />
+    <option name="totallyTimeSpent" value="69609000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <frame x="0" y="0" width="1280" height="800" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32533333" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -366,6 +365,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32533333" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32933334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -416,12 +416,36 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/FloodIt.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3900">
+          <caret line="264" column="22" lean-forward="false" selection-start-line="264" selection-start-column="17" selection-end-line="264" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
+            <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
+            <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
+            <marker date="1543258187599" expanded="false" signature="4465:4469" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Messages/Attachments/a3/03/B1D6CA60-B6DB-4D6E-89B8-257BFDE7ED8A/mazeGame (1).java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="51" column="24" lean-forward="false" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="24" />
+          <folding>
+            <element signature="e#3999#4005#0" expanded="true" />
+            <element signature="e#5162#5174#0" expanded="true" />
+            <element signature="e#5276#5282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FloodIt.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2010">
           <caret line="141" column="41" lean-forward="false" selection-start-line="141" selection-start-column="41" selection-end-line="141" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -436,8 +460,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -452,8 +474,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -468,8 +488,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -484,8 +502,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -507,8 +523,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -530,8 +544,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
             <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
             <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
             <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
@@ -638,29 +650,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/FloodIt.java">
+    <entry file="file://$USER_HOME$/Library/Messages/Attachments/a3/03/B1D6CA60-B6DB-4D6E-89B8-257BFDE7ED8A/mazeGame (1).java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-323">
-          <caret line="264" column="22" lean-forward="false" selection-start-line="264" selection-start-column="17" selection-end-line="264" selection-end-column="22" />
+        <state relative-caret-position="389">
+          <caret line="51" column="25" lean-forward="false" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="25" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#20163#20164#0" expanded="true" />
-            <element signature="e#20200#20201#0" expanded="true" />
-            <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
-            <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
-            <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
-            <marker date="1543258187599" expanded="false" signature="4465:4469" ph=" }" />
+            <element signature="e#3999#4005#0" expanded="true" />
+            <element signature="e#5162#5174#0" expanded="true" />
+            <element signature="e#5276#5282#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Library/Messages/Attachments/a3/03/B1D6CA60-B6DB-4D6E-89B8-257BFDE7ED8A/mazeGame (1).java">
+    <entry file="file://$PROJECT_DIR$/src/FloodIt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="51" column="24" lean-forward="false" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="24" />
+        <state relative-caret-position="109">
+          <caret line="128" column="29" lean-forward="false" selection-start-line="128" selection-start-column="20" selection-end-line="128" selection-end-column="29" />
           <folding>
-            <element signature="e#5162#5174#0" expanded="true" />
-            <element signature="e#5276#5282#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <marker date="1543258187599" expanded="false" signature="3020:3027" ph=" { " />
+            <marker date="1543258187599" expanded="false" signature="3073:3077" ph=" }" />
+            <marker date="1543258187599" expanded="false" signature="4443:4450" ph=" { " />
+            <marker date="1543258187599" expanded="false" signature="4465:4469" ph=" }" />
           </folding>
         </state>
       </provider>
