@@ -4,7 +4,6 @@ import javalib.impworld.*;
 import javalib.worldimages.*;
 import tester.*;
 
-
 class Vertex {
 
   static final int VERTEX_SIZE = MazeWorld.CANVAS_SIZE / MazeWorld.BOARD_SIZE;
@@ -51,6 +50,29 @@ class Vertex {
     return this.x == vertex.x
             && this.y == vertex.y;
   }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof Vertex) {
+      Vertex o = (Vertex) other;
+      return this.x == o.x
+              && this.y == o.y
+              && this.outEdges.equals(o.outEdges)
+              && this.color.equals(o.color)
+              && this.visited == o.visited;
+    }
+    return false;
+  }
+
+  boolean isValidNeighbor(Vertex other) {
+    for (Edge e: this.outEdges) {
+      if (e.to.equals(other) && e.toRemove) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
 
 class Edge {
@@ -71,6 +93,13 @@ class Edge {
     this.to = to;
     this.weight = new Random().nextInt(100);
     this.toRemove = false;
+  }
+
+  Edge(Vertex from, Vertex to, boolean toRemove) {
+    this.from = from;
+    this.to = to;
+    this.weight = new Random().nextInt(100);
+    this.toRemove = toRemove;
   }
 
 
@@ -97,8 +126,8 @@ class Edge {
 }
 
 class MazeWorld extends World {
-  static final int CANVAS_SIZE = 500;
-  static final int BOARD_SIZE = 10;
+  static final int CANVAS_SIZE = 700;
+  static final int BOARD_SIZE = 35;
 
   ArrayList<Edge> edges;
   ArrayList<ArrayList<Vertex>> vertexList;
@@ -127,12 +156,28 @@ class MazeWorld extends World {
         vertexList.get(i).get(j).drawVertex(w);
       }
     }
-    return w;
+
+    if (this.current.x == CANVAS_SIZE - Vertex.VERTEX_SIZE
+            && this.current.y == CANVAS_SIZE - Vertex.VERTEX_SIZE) {
+      w.placeImageXY(
+              new TextImage(
+                      "SOLVED", 20, Color.GREEN),
+              CANVAS_SIZE / 2,
+              CANVAS_SIZE / 2);
+    }
+    w.placeImageXY(new CircleImage(
+            Vertex.VERTEX_SIZE / 4, OutlineMode.SOLID, Color.BLACK),
+            this.current.x + Vertex.VERTEX_SIZE / 2,
+            this.current.y + Vertex.VERTEX_SIZE / 2);
+
+      return w;
   }
 
   //onTick method
   public void onTick() {
     super.onTick();
+
+
   }
 
   @Override
@@ -150,6 +195,7 @@ class MazeWorld extends World {
       MazeWorld newW = new MazeWorld();
       this.vertexList = newW.vertexList;
       this.edges = newW.edges;
+      this.current = newW.current;
     }
 
     else if (s.equals("left") || s.equals("right") || s.equals("up") || s.equals("down")) {
@@ -159,20 +205,36 @@ class MazeWorld extends World {
 
   void moveCurrent(String s) {
     if (s.equals("left") && this.current.x > 0) {
-      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
+      Vertex next = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
               .get(this.current.x / Vertex.VERTEX_SIZE - 1);
+
+
+      if (this.current.isValidNeighbor(next)) {
+        this.current = next;
+      }
     }
-    else if (s.equals("right") && this.current.x < CANVAS_SIZE) {
-      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
+    else if (s.equals("right") && this.current.x < CANVAS_SIZE - Vertex.VERTEX_SIZE) {
+      Vertex next = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE)
               .get(this.current.x / Vertex.VERTEX_SIZE + 1);
+      if (this.current.isValidNeighbor(next)) {
+        this.current = next;
+      }
     }
     else if (s.equals("up") && this.current.y > 0) {
-      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE - 1)
+      Vertex next = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE - 1)
               .get(this.current.x / Vertex.VERTEX_SIZE);
+
+      if (this.current.isValidNeighbor(next)) {
+        this.current = next;
+      }
     }
-    else if (s.equals("down") && this.current.y < CANVAS_SIZE) {
-      this.current = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE + 1)
+    else if (s.equals("down") && this.current.y < CANVAS_SIZE - Vertex.VERTEX_SIZE) {
+      Vertex next = this.vertexList.get(this.current.y / Vertex.VERTEX_SIZE + 1)
               .get(this.current.x / Vertex.VERTEX_SIZE);
+
+      if (this.current.isValidNeighbor(next)) {
+        this.current = next;
+      }
     }
     this.current.visited = true;
   }
@@ -211,7 +273,10 @@ class MazeWorld extends World {
   void makeEdges() {
     for (ArrayList<Vertex> vertices : vertexList) {
       for (Vertex v : vertices) {
-        this.edges.addAll(v.outEdges);
+        for (Edge e: v.outEdges) {
+          this.edges.add(e);
+
+        }
       }
     }
   }
@@ -316,13 +381,13 @@ class MazeWorld extends World {
       if (reps.get(curr).sameVertex(v)) {
         reps.put(curr, u);
       }
-      //reps.put(v, u);
     }
   }
 
   void edgeRemove() {
     for (Edge e : this.unionFind()) {
       e.toRemove = true;
+      e.to.outEdges.add(new Edge(e.to, e.from, true));
     }
   }
 
@@ -344,21 +409,21 @@ class MazeWorld extends World {
 
     while (worklist.size() > 0) {
       Vertex next = worklist.remove();
+      this.current = next;
 
-      if (next == to) {
+      if (next.equals(to)) { //override equals so that contains can properly use
         return true;
       }
-      else if (seen.contains(next)) {}
-
+      else if (seen.contains(next)) {
+      }
       else {
         for (Edge e : next.outEdges) {
-          if (e.toRemove) {
-            worklist.add(e.to, 0);
+          if (e.toRemove && !seen.contains(next)) {
+            worklist.add(e.to, 0); //make sure e.to is tracking the right this
           }
         }
         seen.add(next);
         next.color = Color.PINK;
-        this.makeScene();
       }
     }
     return false;
@@ -475,9 +540,9 @@ class ExampleWorld {
             m.vertexList.get(MazeWorld.BOARD_SIZE - 1)
                     .get(MazeWorld.BOARD_SIZE - 1).outEdges.size() == 0,
             true);
-    t.checkExpect(m.vertexList.get(1).get(1).outEdges.size() == 2, true);
+    t.checkExpect(m.vertexList.get(1).get(1).outEdges.size() == 3, true);
     t.checkExpect(m.vertexList.get(0).get(MazeWorld.BOARD_SIZE - 1).outEdges
-            .size() == 1, true);
+            .size() == 2, true);
   }
 
   // tests buildEdgeList
